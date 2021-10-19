@@ -12,7 +12,7 @@ namespace BuildSoft.Code
         private const int DefaultTabSize = 4;
         internal static int TabSize { get; set; } = DefaultTabSize;
 
-        private static Dictionary<int, string> _spaceCache = new()
+        private static readonly Dictionary<int, string> _spaceCache = new()
         {
             { 1 * DefaultTabSize, new(' ', 1 * DefaultTabSize) },
             { 2 * DefaultTabSize, new(' ', 2 * DefaultTabSize) },

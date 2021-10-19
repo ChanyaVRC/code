@@ -10,6 +10,7 @@ using System.IO;
 namespace BuildSoft.Code.CsGenerator.Content.Test
 {
     [TestClass]
+    [TestOf(typeof(CsFileContent))]
     public class CsFileContentTest
     {
         private readonly CsFileContent _exportToTestTarget = new();
@@ -33,7 +34,7 @@ namespace BuildSoft.Code.CsGenerator.Content.Test
         }
 
         [TestMethod]
-        public void ConstractorTest()
+        public void ConstructorTest()
         {
             _ = new CsFileContent();
         }

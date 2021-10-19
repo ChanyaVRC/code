@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.CsGenerator.Content.Test
 {
     [TestClass]
+    [TestOf(typeof(CsLineContent))]
     public class CsLineContentTest
     {
         [TestMethod]

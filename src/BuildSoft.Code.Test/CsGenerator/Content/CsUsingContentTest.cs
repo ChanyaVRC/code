@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.CsGenerator.Content.Test
 {
     [TestClass]
+    [TestOf(typeof(CsUsingContent))]
     public class CsUsingContentTest
     {
         [TestMethod]
-        public void ConstractorTest()
+        public void ConstructorTest()
         {
             CsUsingContent content = new("System");
             Assert.AreEqual("System", content.Namespace);

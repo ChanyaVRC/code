@@ -9,7 +9,7 @@ namespace BuildSoft.Code.CsGenerator
 {
     public class CsFileWriter : IDisposable, IAsyncDisposable
     {
-        private static readonly FileStreamOptions _options = new FileStreamOptions
+        private static readonly FileStreamOptions _options = new()
         {
             Access = FileAccess.Write,
             BufferSize = 4096,
@@ -20,7 +20,7 @@ namespace BuildSoft.Code.CsGenerator
         };
         public const int TabSize = 4;
 
-        private StreamWriter _writer;
+        private readonly StreamWriter _writer;
         private int _currentIndent = 0;
         
         public int CurrentIndent
@@ -31,13 +31,12 @@ namespace BuildSoft.Code.CsGenerator
                 if (value < 0)
                 {
                     // TODO: Use ThrowHelper
-                    throw new ArgumentException();
+                    throw new ArgumentOutOfRangeException(nameof(value));
                 }
                 _currentIndent = value;
             }
         }
 
-        private static Dictionary<int, string> _spaceCache = new();
         private CsTopLevelStatement? _topLevelStatement;
 
         public CsFileWriter(string filePath)
@@ -72,7 +71,7 @@ namespace BuildSoft.Code.CsGenerator
         }
         internal void AppendIndent()
         {
-            _writer.Write(CreateOrGetIndent(_currentIndent));
+            _writer.Write(CodeHelper.CreateOrGetIndent(_currentIndent));
         }
 
         internal async Task AppendAsync(string content)
@@ -97,36 +96,29 @@ namespace BuildSoft.Code.CsGenerator
         }
         internal async Task AppendIndentAsync()
         {
-            await _writer.WriteAsync(CreateOrGetIndent(_currentIndent));
+            await _writer.WriteAsync(CodeHelper.CreateOrGetIndent(_currentIndent));
         }
 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string CreateOrGetIndent(int indent)
-        {
-            if (_spaceCache.ContainsKey(indent))
-            {
-                return _spaceCache[indent];
-            }
-            lock (_spaceCache)
-            {
-                if (_spaceCache.ContainsKey(indent))
-                {
-                    return _spaceCache[indent];
-                }
-                string indentContent = new(' ', indent * TabSize);
-                _spaceCache.Add(indent, indentContent);
-                return indentContent;
-            }
-        }
-
+        private bool _isDisposed = false;
         public void Dispose()
         {
-            _writer.Dispose();
+            if (_isDisposed)
+            {
+                _isDisposed = true;
+
+                _writer.Dispose();
+                GC.SuppressFinalize(this);
+            }
         }
         public async ValueTask DisposeAsync()
         {
-            await _writer.DisposeAsync();
+            if (_isDisposed)
+            {
+                _isDisposed = true;
+
+                await _writer.DisposeAsync();
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

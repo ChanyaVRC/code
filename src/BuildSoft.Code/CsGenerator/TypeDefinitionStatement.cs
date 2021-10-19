@@ -11,13 +11,12 @@ namespace BuildSoft.Code.CsGenerator
 {
     public partial class TypeDefinitionStatement : CsStatement
     {
-        private string _keyword;
+        private readonly string _keyword;
         public override string HeadKeyword => _keyword;
 
         private static string CreateHead(TypeDefinitionModifierFlags flags, TypeDefinitionKeyword type, string name)
         {
-            string[] array = new string[] { Modifier.GetTypeKeyword(type), name };
-            return string.Join(' ', Modifier.GetModifiers(flags).Concat(array));
+            return string.Join(' ', Modifier.GetModifiers(flags).Append(Modifier.GetTypeKeyword(type)).Append(name));
         }
 
         protected internal TypeDefinitionStatement(

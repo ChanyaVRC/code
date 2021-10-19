@@ -56,7 +56,7 @@ namespace BuildSoft.Code.CsGenerator
         }
         public void WriteAttributes(string[] contents, bool isLine = true)
         {
-            StringBuilder builder = new StringBuilder(contents.Length * nameof(Attribute).Length);
+            StringBuilder builder = new(contents.Length * nameof(Attribute).Length);
             builder.Append('[');
             for (int i = 0; i < contents.Length; i++)
             {
@@ -125,6 +125,7 @@ namespace BuildSoft.Code.CsGenerator
                     Writer.CurrentIndent--;
                     Writer.AppendLine("}");
                 }
+                GC.SuppressFinalize(this);
             }
         }
 
@@ -145,6 +146,7 @@ namespace BuildSoft.Code.CsGenerator
                     Writer.CurrentIndent--;
                     await Writer.AppendLineAsync("}");
                 }
+                GC.SuppressFinalize(this);
             }
         }
     }

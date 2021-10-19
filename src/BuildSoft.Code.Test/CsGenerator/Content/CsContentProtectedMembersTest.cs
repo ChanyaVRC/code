@@ -4,6 +4,7 @@ using System;
 namespace BuildSoft.Code.CsGenerator.Content.Test
 {
     [TestClass]
+    [TestOf(typeof(CsContent))]
     public class CsContentProtectedMembersTest : CsContent
     {
         public override string ToCode(out int contentPosition, ref int contentIndent) => throw new NotImplementedException();

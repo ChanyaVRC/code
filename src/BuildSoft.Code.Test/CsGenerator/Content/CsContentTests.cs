@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.CsGenerator.Content.Test
 {
     [TestClass]
+    [TestOf(typeof(CsContent))]
     public class CsContentTests
     {
         private class CsContentDerived : CsContent
