@@ -8,49 +8,48 @@ namespace BuildSoft.Code.Collection
 {
     public class EnumPairs<TKey> : SortedList<TKey, string>  where TKey : struct, Enum
     {
+        private static readonly EnumComparer _comparer = new();
+
         #region Constractors
-        public EnumPairs() : base()
+        public EnumPairs() : base(_comparer)
         {
         }
 
-        public EnumPairs(IDictionary<TKey, string> dictionary) : base(dictionary)
+        public EnumPairs(IDictionary<TKey, string> dictionary) : base(dictionary, _comparer)
         {
         }
 
-        public EnumPairs(int capacity) : base(capacity)
+        public EnumPairs(int capacity) : base(capacity, _comparer)
         {
         }
         #endregion
 
-
         public IEnumerable<string> GetStrings(TKey value)
         {
-            var names = Values.ToImmutableArray();
-            var values = Keys.ToImmutableArray();
+            var names = Values.ToArray();
+            var keys = Keys.ToArray();
             ulong resultValue = EnumHelper.ToUInt64(value);
 
             if (resultValue == 0)
             {
-                if(values.Length > 0 && values[0].Equals(0))
+                if (keys.Length > 0)
                 {
-                    yield return names[0];
+                    ulong v = EnumHelper.ToUInt64(keys[0]);
+                    if (v == 0)
+                    {
+                        yield return names[0];
+                    }
                 }
                 yield break;
             }
 
-            // With a ulong result value, regardless of the enum's base type, the maximum
-            // possible number of consistent name/values we could have is 64, since every
-            // value is made up of one or more bits, and when we see values and incorporate
-            // their names, we effectively switch off those bits.
-            Span<int> foundItems = stackalloc int[64];
-
             // Walk from largest to smallest. It's common to have a flags enum with a single
             // value that matches a single entry, in which case we can just return the existing
             // name string.
-            int index = values.Length - 1;
+            int index = keys.Length - 1;
             while (index >= 0)
             {
-                ulong cmpValue = EnumHelper.ToUInt64(values[index]);
+                ulong cmpValue = EnumHelper.ToUInt64(keys[index]);
                 if (cmpValue == resultValue)
                 {
                     yield return names[index];
@@ -65,9 +64,12 @@ namespace BuildSoft.Code.Collection
                 index--;
             }
 
+            int[] foundItems = new int[64];
+
+            int resultLength = 0, foundItemsCount = 0;
             while (index >= 0)
             {
-                ulong currentValue = EnumHelper.ToUInt64(values[index]);
+                ulong currentValue = EnumHelper.ToUInt64(keys[index]);
                 if (index == 0 && currentValue == 0)
                 {
                     break;
@@ -76,30 +78,36 @@ namespace BuildSoft.Code.Collection
                 if ((resultValue & currentValue) == currentValue)
                 {
                     resultValue -= currentValue;
-                    yield return names[index];
+                    foundItems[foundItemsCount++] = index;
+                    resultLength = checked(resultLength + names[index].Length);
                 }
 
                 index--;
             }
+            while (--foundItemsCount >= 0)
+            {
+                yield return names[foundItems[foundItemsCount]];
+            }
         }
+
         public string ConvertToString(TKey value, string separator)
         {
-            var names = Values.ToImmutableArray();
-            var keys = Keys.ToImmutableArray();
+            var names = Values.ToArray();
+            var keys = Keys.ToArray();
             ulong resultValue = EnumHelper.ToUInt64(value);
 
             if (resultValue == 0)
             {
-                return keys.Length > 0 && keys[0].Equals(0) ?
-                    names[0] :
-                    "";
+                if (keys.Length > 0)
+                {
+                    ulong v = EnumHelper.ToUInt64(keys[0]);
+                    if (v == 0)
+                    {
+                        return names[0];
+                    }
+                    return "";
+                }
             }
-
-            // With a ulong result value, regardless of the enum's base type, the maximum
-            // possible number of consistent name/values we could have is 64, since every
-            // value is made up of one or more bits, and when we see values and incorporate
-            // their names, we effectively switch off those bits.
-            Span<int> foundItems = stackalloc int[64];
 
             // Walk from largest to smallest. It's common to have a flags enum with a single
             // value that matches a single entry, in which case we can just return the existing
@@ -120,6 +128,11 @@ namespace BuildSoft.Code.Collection
 
                 index--;
             }
+            // With a ulong result value, regardless of the enum's base type, the maximum
+            // possible number of consistent name/values we could have is 64, since every
+            // value is made up of one or more bits, and when we see values and incorporate
+            // their names, we effectively switch off those bits.
+            Span<int> foundItems = stackalloc int[64];
 
             // Now look for multiple matches, storing the indices of the values
             // into our span.
@@ -177,5 +190,16 @@ namespace BuildSoft.Code.Collection
             return new string(resultStart);
         }
 
+
+        private class EnumComparer : IComparer<TKey>
+        {
+            public int Compare(TKey x, TKey y)
+            {
+                ulong xValue = EnumHelper.ToUInt64(x);
+                ulong yValue = EnumHelper.ToUInt64(y);
+                
+                return xValue.CompareTo(yValue);
+            }
+        }
     }
 }
