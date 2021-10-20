@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.CsGenerator.Content
 {
-    internal class CsFieldContent : CsMemberContent
+    internal class CsFieldContent : CsMemberContent, INoContentsContent
     {
         private List<string>? _attributes;
+        private CsContent[]? _emptyContent;
+
         public override IReadOnlyCollection<string> Attributes
             => _attributes ??= new List<string>();
+        public override IReadOnlyList<CsContent> Contents
+            => _emptyContent ??= Array.Empty<CsContent>();
 
         public CsFieldContent(string identifier, string type, IEnumerable<string> attributes = null!) : base(identifier, type)
         {

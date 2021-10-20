@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.CsGenerator.Content
 {
-    public abstract class CsNoContentsContent : CsContent
+    public abstract class CsNoContentsContent : CsContent, INoContentsContent
     {
         public sealed override IReadOnlyList<CsContent> Contents
             => _contents ??= Array.Empty<CsContent>();
