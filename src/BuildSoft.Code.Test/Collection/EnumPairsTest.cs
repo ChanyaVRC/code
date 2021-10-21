@@ -12,7 +12,7 @@ namespace BuildSoft.Code.Collection.Test
     [TestOf(typeof(EnumPairs<>))]
     public class EnumPairsTest
     {
-        private readonly Dictionary<Flag, string> _initalDictionary = new()
+        private static readonly Dictionary<Flag, string> _initalDictionary = new()
         {
             { Flag.Flag1, "Flag-1" },
             { Flag.Flag2, "Flag-2" },
@@ -20,7 +20,7 @@ namespace BuildSoft.Code.Collection.Test
             { Flag.Flag5, "Flag-5" },
         };
 
-        private readonly Dictionary<HasNoneFlag, string> _hasNoneFlagInitalDictionary = new()
+        private static readonly Dictionary<HasNoneFlag, string> _hasNoneFlagInitalDictionary = new()
         {
             { HasNoneFlag.None, "None-0" },
             { HasNoneFlag.Flag1, "Flag-1" },
@@ -28,6 +28,9 @@ namespace BuildSoft.Code.Collection.Test
             { HasNoneFlag.Flag3, "Flag-3" },
             { HasNoneFlag.Flag5, "Flag-5" },
         };
+
+        private static readonly KeyValuePair<Flag,string>[] _expected
+            = _initalDictionary.OrderBy(x => (ulong)Convert.ToInt32(x.Key)).ToArray();
 
         private enum Flag : int
         {
@@ -51,27 +54,23 @@ namespace BuildSoft.Code.Collection.Test
         public void ConstructorTest1()
         {
             EnumPairs<Flag> pairs = new();
-            SortedList<Flag, string> expected = new();
-
-            Assert.AreEqual(expected.Capacity, pairs.Capacity);
+            
+            Assert.AreEqual(0, pairs.Capacity);
         }
 
         [TestMethod]
         public void ConstructorTest2()
         {
             EnumPairs<Flag> pairs = new(1);
-            SortedList<Flag, string> expected = new(1);
 
-            Assert.AreEqual(expected.Capacity, pairs.Capacity);
+            Assert.AreEqual(1, pairs.Capacity);
         }
 
         [TestMethod]
         public void ConstructorTest3()
         {
             EnumPairs<Flag> pairs = new(_initalDictionary);
-            var expected = _initalDictionary.OrderBy(x => (ulong)Convert.ToInt32(x.Key)).ToArray();
-
-            CollectionAssert.AreEqual(expected, pairs);
+            CollectionAssert.AreEqual(_expected, pairs);
         }
 
         [TestMethod]
@@ -80,12 +79,14 @@ namespace BuildSoft.Code.Collection.Test
             EnumPairs<Flag> pairs = new(_initalDictionary);
             CollectionAssert.AreEqual(Array.Empty<string>(), pairs.GetStrings(0).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1" }, pairs.GetStrings(Flag.Flag1).ToArray());
+            CollectionAssert.AreEqual(Array.Empty<string>(), pairs.GetStrings(Flag.Flag4).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-3" }, pairs.GetStrings(Flag.Flag1 | Flag.Flag3 | Flag.Flag4).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-5" }, pairs.GetStrings(Flag.Flag1 | Flag.Flag5).ToArray());
 
             EnumPairs<HasNoneFlag> pairs2 = new(_hasNoneFlagInitalDictionary);
             CollectionAssert.AreEqual(new[] { "None-0" }, pairs2.GetStrings(0).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1" }, pairs2.GetStrings(HasNoneFlag.Flag1).ToArray());
+            CollectionAssert.AreEqual(Array.Empty<string>(), pairs2.GetStrings(HasNoneFlag.Flag4).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-3" }, pairs2.GetStrings(HasNoneFlag.Flag1 | HasNoneFlag.Flag3 | HasNoneFlag.Flag4).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-5" }, pairs2.GetStrings(HasNoneFlag.Flag1 | HasNoneFlag.Flag5).ToArray());
         }
@@ -104,6 +105,19 @@ namespace BuildSoft.Code.Collection.Test
             Assert.AreEqual("Flag-1", pairs2.ConvertToString(HasNoneFlag.Flag1, "/"));
             Assert.AreEqual("Flag-1/Flag-2", pairs2.ConvertToString(HasNoneFlag.Flag1 | HasNoneFlag.Flag2, "/"));
             Assert.AreEqual("Flag-1, Flag-3", pairs2.ConvertToString(HasNoneFlag.Flag1 | HasNoneFlag.Flag3, ", "));
+        }
+
+        [TestMethod]
+        [Timeout(100)]
+        public void GetStringsATest()
+        {
+            const int ElementCount = 25000;
+            EnumPairs<Flag> pairs = new(ElementCount);
+
+            for (int i = ElementCount - 1; i >= 0; i--)
+            {
+                pairs.Add((Flag)i, "value");
+            }
         }
     }
 }

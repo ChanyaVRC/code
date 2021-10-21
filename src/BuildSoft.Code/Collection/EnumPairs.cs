@@ -28,13 +28,13 @@ namespace BuildSoft.Code.Collection
         {
             var names = Values.ToArray();
             var keys = Keys.ToArray();
-            ulong resultValue = EnumHelper.ToUInt64(value);
+            ulong resultValue = EnumHelper.ToUInt64(TypeCode, value);
 
             if (resultValue == 0)
             {
                 if (keys.Length > 0)
                 {
-                    ulong v = EnumHelper.ToUInt64(keys[0]);
+                    ulong v = EnumHelper.ToUInt64(TypeCode, keys[0]);
                     if (v == 0)
                     {
                         yield return names[0];
@@ -49,7 +49,7 @@ namespace BuildSoft.Code.Collection
             int index = keys.Length - 1;
             while (index >= 0)
             {
-                ulong cmpValue = EnumHelper.ToUInt64(keys[index]);
+                ulong cmpValue = EnumHelper.ToUInt64(TypeCode, keys[index]);
                 if (cmpValue == resultValue)
                 {
                     yield return names[index];
@@ -69,7 +69,7 @@ namespace BuildSoft.Code.Collection
             int resultLength = 0, foundItemsCount = 0;
             while (index >= 0)
             {
-                ulong currentValue = EnumHelper.ToUInt64(keys[index]);
+                ulong currentValue = EnumHelper.ToUInt64(TypeCode, keys[index]);
                 if (index == 0 && currentValue == 0)
                 {
                     break;
@@ -94,13 +94,13 @@ namespace BuildSoft.Code.Collection
         {
             var names = Values.ToArray();
             var keys = Keys.ToArray();
-            ulong resultValue = EnumHelper.ToUInt64(value);
+            ulong resultValue = EnumHelper.ToUInt64(TypeCode, value);
 
             if (resultValue == 0)
             {
                 if (keys.Length > 0)
                 {
-                    ulong v = EnumHelper.ToUInt64(keys[0]);
+                    ulong v = EnumHelper.ToUInt64(TypeCode, keys[0]);
                     if (v == 0)
                     {
                         return names[0];
@@ -115,7 +115,7 @@ namespace BuildSoft.Code.Collection
             int index = keys.Length - 1;
             while (index >= 0)
             {
-                ulong cmpValue = EnumHelper.ToUInt64(keys[index]);
+                ulong cmpValue = EnumHelper.ToUInt64(TypeCode, keys[index]);
                 if (cmpValue == resultValue)
                 {
                     return names[index];
@@ -139,7 +139,7 @@ namespace BuildSoft.Code.Collection
             int resultLength = 0, foundItemsCount = 0;
             while (index >= 0)
             {
-                ulong currentValue = EnumHelper.ToUInt64(keys[index]);
+                ulong currentValue = EnumHelper.ToUInt64(TypeCode, keys[index]);
                 if (index == 0 && currentValue == 0)
                 {
                     break;
@@ -190,14 +190,16 @@ namespace BuildSoft.Code.Collection
             return new string(resultStart);
         }
 
+        private static readonly TypeCode TypeCode = Type.GetTypeCode(typeof(TKey));
 
         private class EnumComparer : IComparer<TKey>
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public int Compare(TKey x, TKey y)
             {
-                ulong xValue = EnumHelper.ToUInt64(x);
-                ulong yValue = EnumHelper.ToUInt64(y);
-                
+                ulong xValue = EnumHelper.ToUInt64(TypeCode, x);
+                ulong yValue = EnumHelper.ToUInt64(TypeCode, y);
+
                 return xValue.CompareTo(yValue);
             }
         }
