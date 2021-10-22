@@ -19,7 +19,8 @@
 
   <ItemGroup>
     <Folder Include="Collection\" />
-    <Folder Include="CsGenerator\Content\RegressionTest\" />
+    <Folder Include="Content\CSharp\RegressionTest\" />
+    <Folder Include="CsGenerator\" />
   </ItemGroup>
 
 </Project>

@@ -74,7 +74,7 @@ namespace BuildSoft.Code.Collection.Test
         }
 
         [TestMethod]
-        public void GetStringsTest()
+        public void GetStringsTest1()
         {
             EnumPairs<Flag> pairs = new(_initalDictionary);
             CollectionAssert.AreEqual(Array.Empty<string>(), pairs.GetStrings(0).ToArray());
@@ -82,29 +82,37 @@ namespace BuildSoft.Code.Collection.Test
             CollectionAssert.AreEqual(Array.Empty<string>(), pairs.GetStrings(Flag.Flag4).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-3" }, pairs.GetStrings(Flag.Flag1 | Flag.Flag3 | Flag.Flag4).ToArray());
             CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-5" }, pairs.GetStrings(Flag.Flag1 | Flag.Flag5).ToArray());
-
-            EnumPairs<HasNoneFlag> pairs2 = new(_hasNoneFlagInitalDictionary);
-            CollectionAssert.AreEqual(new[] { "None-0" }, pairs2.GetStrings(0).ToArray());
-            CollectionAssert.AreEqual(new[] { "Flag-1" }, pairs2.GetStrings(HasNoneFlag.Flag1).ToArray());
-            CollectionAssert.AreEqual(Array.Empty<string>(), pairs2.GetStrings(HasNoneFlag.Flag4).ToArray());
-            CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-3" }, pairs2.GetStrings(HasNoneFlag.Flag1 | HasNoneFlag.Flag3 | HasNoneFlag.Flag4).ToArray());
-            CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-5" }, pairs2.GetStrings(HasNoneFlag.Flag1 | HasNoneFlag.Flag5).ToArray());
+        }
+        
+        [TestMethod]
+        public void GetStringsTest2()
+        {
+            EnumPairs<HasNoneFlag> pairs = new(_hasNoneFlagInitalDictionary);
+            CollectionAssert.AreEqual(new[] { "None-0" }, pairs.GetStrings(0).ToArray());
+            CollectionAssert.AreEqual(new[] { "Flag-1" }, pairs.GetStrings(HasNoneFlag.Flag1).ToArray());
+            CollectionAssert.AreEqual(Array.Empty<string>(), pairs.GetStrings(HasNoneFlag.Flag4).ToArray());
+            CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-3" }, pairs.GetStrings(HasNoneFlag.Flag1 | HasNoneFlag.Flag3 | HasNoneFlag.Flag4).ToArray());
+            CollectionAssert.AreEqual(new[] { "Flag-1", "Flag-5" }, pairs.GetStrings(HasNoneFlag.Flag1 | HasNoneFlag.Flag5).ToArray());
         }
 
         [TestMethod]
-        public void ConvertToStringTest()
+        public void ConvertToStringTest1()
         {
             EnumPairs<Flag> pairs = new(_initalDictionary);
             Assert.AreEqual("", pairs.ConvertToString(0, "/"));
             Assert.AreEqual("Flag-1", pairs.ConvertToString(Flag.Flag1, "/"));
             Assert.AreEqual("Flag-1/Flag-2", pairs.ConvertToString(Flag.Flag1 | Flag.Flag2, "/"));
             Assert.AreEqual("Flag-1, Flag-3", pairs.ConvertToString(Flag.Flag1 | Flag.Flag3, ", "));
-
-            EnumPairs<HasNoneFlag> pairs2 = new(_hasNoneFlagInitalDictionary);
-            Assert.AreEqual("None-0", pairs2.ConvertToString(0, "/"));
-            Assert.AreEqual("Flag-1", pairs2.ConvertToString(HasNoneFlag.Flag1, "/"));
-            Assert.AreEqual("Flag-1/Flag-2", pairs2.ConvertToString(HasNoneFlag.Flag1 | HasNoneFlag.Flag2, "/"));
-            Assert.AreEqual("Flag-1, Flag-3", pairs2.ConvertToString(HasNoneFlag.Flag1 | HasNoneFlag.Flag3, ", "));
+        }
+        
+        [TestMethod]
+        public void ConvertToStringTest2()
+        {
+            EnumPairs<HasNoneFlag> pairs = new(_hasNoneFlagInitalDictionary);
+            Assert.AreEqual("None-0", pairs.ConvertToString(0, "/"));
+            Assert.AreEqual("Flag-1", pairs.ConvertToString(HasNoneFlag.Flag1, "/"));
+            Assert.AreEqual("Flag-1/Flag-2", pairs.ConvertToString(HasNoneFlag.Flag1 | HasNoneFlag.Flag2, "/"));
+            Assert.AreEqual("Flag-1, Flag-3", pairs.ConvertToString(HasNoneFlag.Flag1 | HasNoneFlag.Flag3, ", "));
         }
 
         [TestMethod]
