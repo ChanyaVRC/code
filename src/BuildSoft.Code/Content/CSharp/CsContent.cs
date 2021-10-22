@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public abstract class CsContent : IAvailable<CsLineContent>, ICodeContent<CsContent>
+    public abstract class CsContent : ICodeContent<CsContent>, IAvailable<CsLineContent>
     {
         public virtual IReadOnlyList<CsContent> Contents => AddableContents;
         protected List<CsContent> AddableContents => _addableContents ??= new List<CsContent>();

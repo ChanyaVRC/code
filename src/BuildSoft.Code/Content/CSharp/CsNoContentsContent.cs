@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public abstract class CsNoContentsContent : CsContent, INoContentsContent
+    public abstract class CsNoContentsContent : CsContent, INoContentsContent<CsContent>
     {
         public sealed override IReadOnlyList<CsContent> Contents
             => _contents ??= Array.Empty<CsContent>();

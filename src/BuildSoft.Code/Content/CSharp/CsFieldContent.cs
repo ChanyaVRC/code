@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal class CsFieldContent : CsMemberContent, INoContentsContent
+    internal class CsFieldContent : CsMemberContent, INoContentsContent<CsContent>
     {
         private List<string>? _attributes;
         private CsContent[]? _emptyContent;
