@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal abstract class CsMemberContent : CsContent, IModifiable
+    public abstract class CsMemberContent : CsContent, IModifiable
     {
         public string Identifier { get; }
         public string Type { get; }

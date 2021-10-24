@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal class CsFieldContent : CsMemberContent, INoContentsContent<CsContent>
+    public class CsFieldContent : CsMemberContent, INoContentsContent<CsContent>
     {
         private List<string>? _attributes;
         private CsContent[]? _emptyContent;
@@ -29,10 +29,7 @@ namespace BuildSoft.Code.Content.CSharp
             => $"{CreateIndent(indent)}{Header};\r\n";
 
         public override string ToCode(out int contentPosition, ref int indent)
-        {
-            string code = ToCode(indent);
-            contentPosition = code.Length;
-            return code;
-        }
+            => ContentHelper.ToCodeForNoContent(ToCode, out contentPosition, indent);
+
     }
 }

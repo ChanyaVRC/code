@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal class CsPropertyContent : CsMemberContent
+    public class CsPropertyContent : CsMemberContent
     {
         public CsPropertyContent(string identifier, string type) : base(identifier, type)
         {

@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal class CsStructureContent : CsUserDefinedTypeContent
+    public class CsStructureContent : CsUserDefinedTypeContent
     {
-        public CsStructureContent(string identifier, IReadOnlyCollection<string> modifiers) : base(identifier, modifiers)
+        public CsStructureContent(string identifier, IReadOnlyCollection<string> modifiers = null!, IReadOnlyCollection<string> baseInterfaces = null!)
+            : base(identifier, modifiers, baseInterfaces: baseInterfaces)
         {
         }
 
-        public override string ToCode(out int contentPosition, ref int indent)
-        {
-            throw new NotImplementedException();
-        }
+        public override string Keyword => "struct";
     }
 }

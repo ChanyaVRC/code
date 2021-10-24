@@ -5,6 +5,8 @@ namespace BuildSoft.Code.Content
     {
         IReadOnlyList<TContent> Contents { get; }
 
-        string ToCode(out int contentPosition, ref int indent);
+        public bool IsUsingContent { get; }
+
+        public string ToCode(out int contentPosition, ref int indent);
     }
 }

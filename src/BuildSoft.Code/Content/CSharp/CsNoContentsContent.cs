@@ -20,11 +20,8 @@ namespace BuildSoft.Code.Content.CSharp
             => throw new InvalidOperationException();
 
         public sealed override string ToCode(out int contentPosition, ref int indent)
-        {
-            string body = ToCode(indent);
-            contentPosition = body.Length;
-            return body;
-        }
+            => ContentHelper.ToCodeForNoContent(ToCode, out contentPosition, indent);
+
         public abstract string ToCode(int indent);
     }
 }

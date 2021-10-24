@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal class CsClassContent : CsUserDefinedTypeContent
+    public class CsClassContent : CsUserDefinedTypeContent
     {
-        public CsClassContent(string identifier, IReadOnlyCollection<string> modifiers) : base(identifier, modifiers)
+        public CsClassContent(string identifier, IReadOnlyCollection<string> modifiers = null!, string baseClass = null!, IReadOnlyCollection<string> baseInterfaces = null!)
+            : base(identifier, modifiers, baseClass, baseInterfaces)
         {
+            
         }
 
-        public override string ToCode(out int contentPosition, ref int indent)
-        {
-            throw new NotImplementedException();
-        }
+        public override string Keyword => "class";
     }
 }

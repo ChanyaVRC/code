@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    internal class CsMethodContent : CsMemberContent
+    public class CsMethodContent : CsMemberContent
     {
         private List<string>? _attributes;
-        private List<CsArgumentDefinition>? _arguments;
         public override IReadOnlyCollection<string> Modifiers
             => _attributes ??= new List<string>();
+
+        private List<CsArgumentDefinition>? _arguments;
         public IList<CsArgumentDefinition> Arguments
             => _arguments ??= new List<CsArgumentDefinition>();
 
