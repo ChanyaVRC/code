@@ -58,34 +58,29 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsNamespaceContent content = new("Test");
 
-            int indent = 0;
-            string expectedCode = 
+            string expectedBody = 
 @"namespace Test
 {
-
 }
 ";
             int expectedPosition =
 @"namespace Test
 {
 ".Length;
-            Assert.AreEqual(expectedCode, content.ToCode(out int position, ref indent));
-            Assert.AreEqual(expectedPosition, position);
-            Assert.AreEqual(1, indent);
+            Code expected = new(expectedBody, expectedPosition, true, true);
+            Assert.AreEqual(expected, content.ToCode(""));
 
-            expectedCode = 
+            expectedBody = 
 @" namespace Test
  {
-
  }
 ";
             expectedPosition = 
 @" namespace Test
  {
 ".Length;
-            Assert.AreEqual(expectedCode, content.ToCode(out position, ref indent));
-            Assert.AreEqual(expectedPosition, position);
-            Assert.AreEqual(2, indent);
+            expected = new(expectedBody, expectedPosition, true, true);
+            Assert.AreEqual(expected, content.ToCode(" "));
         }
     }
 }

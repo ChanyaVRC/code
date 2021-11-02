@@ -8,16 +8,12 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsMethodContent : CsMemberContent
     {
-        private List<string>? _attributes;
-        public override IReadOnlyCollection<string> Modifiers
-            => _attributes ??= new List<string>();
-
         private List<CsArgumentDefinition>? _arguments;
-        public IList<CsArgumentDefinition> Arguments
+        public IReadOnlyCollection<CsArgumentDefinition> Arguments
             => _arguments ??= new List<CsArgumentDefinition>();
 
         public string ArgumentList => CreateArgumentList();
-        public string CreateArgumentList()
+        protected virtual string CreateArgumentList()
         {
             StringBuilder builder = new();
             foreach (var (type, identifier) in Arguments)
@@ -36,15 +32,11 @@ namespace BuildSoft.Code.Content.CSharp
 
         public CsMethodContent(
             string identifier,
-            string type,
-            IEnumerable<string> attributes = null!,
-            IEnumerable<CsArgumentDefinition> arguments = null!)
-            : base(identifier, type)
+            string returnType,
+            IEnumerable<string>? modifiers = null,
+            IEnumerable<CsArgumentDefinition>? arguments = null)
+            : base(identifier, returnType, modifiers)
         {
-            if (attributes != null)
-            {
-                _attributes = new List<string>(attributes);
-            }
             if (arguments != null)
             {
                 _arguments = new List<CsArgumentDefinition>(arguments);
@@ -52,18 +44,15 @@ namespace BuildSoft.Code.Content.CSharp
         }
 
 
-        public override string ToCode(out int contentPosition, ref int indent)
+        public override Code ToCode(string indent)
         {
-            string indentInstance = CreateIndent(indent);
             string code =
-$@"{indentInstance}{Header}({ArgumentList})
-{indentInstance}{{
-
-{indentInstance}}}
+$@"{indent}{Header}({ArgumentList})
+{indent}{{
+{indent}}}
 ";
-            contentPosition = code.Length - "\r\n}\r\n".Length - indentInstance.Length;
-            indent++;
-            return code;
+            int position = code.Length - "}\r\n".Length - indent.Length;
+            return Code.CreateCodeWithContents(code, position, true);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsStructureContent : CsUserDefinedTypeContent
     {
-        public CsStructureContent(string identifier, IReadOnlyCollection<string> modifiers = null!, IReadOnlyCollection<string> baseInterfaces = null!)
+        public CsStructureContent(string identifier, IReadOnlyCollection<string>? modifiers = null, IReadOnlyCollection<string>? baseInterfaces = null)
             : base(identifier, modifiers, baseInterfaces: baseInterfaces)
         {
         }

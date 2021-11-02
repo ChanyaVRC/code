@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public class CsLineContent : CsNoContentsContent
+    public class CsLineContent : CsContent
     {
-        public override string ToCode(int indent)
+        public CsLineContent()
         {
-            return "\r\n";
+            CanOperateContents = false;
         }
+        public override Code ToCode(string indent) 
+            => Code.CreateCodeWithNoContents("\r\n");
     }
 }

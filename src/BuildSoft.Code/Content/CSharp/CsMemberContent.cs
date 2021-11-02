@@ -10,19 +10,27 @@ namespace BuildSoft.Code.Content.CSharp
     {
         public string Identifier { get; }
         public string Type { get; }
-        public abstract IReadOnlyCollection<string> Modifiers { get; }
-        public virtual string Header => !IsImmutableHeader || _header == null ? _header = CreateHeader() : _header;
+
+        private List<string>? _modifiers;
+        public IReadOnlyCollection<string> Modifiers
+            => _modifiers ??= new List<string>();
+
+        public string Header => !IsImmutableHeader || _header == null ? _header = CreateHeader() : _header;
         protected bool IsImmutableHeader { get; set; } = true;
 
-        private string CreateHeader()
+        protected virtual string CreateHeader()
             => string.Join(' ', Modifiers.Append(Type).Append(Identifier));
 
-        public string? _header;
+        private string? _header;
 
-        public CsMemberContent(string identifier, string type)
+        public CsMemberContent(string identifier, string type, IEnumerable<string>? modifiers = null)
         {
             Identifier = identifier;
             Type = type;
+            if (modifiers != null)
+            {
+                _modifiers = new(modifiers);
+            }
         }
     }
 }

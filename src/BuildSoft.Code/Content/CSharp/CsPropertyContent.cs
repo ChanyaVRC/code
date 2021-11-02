@@ -8,15 +8,21 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsPropertyContent : CsMemberContent
     {
-        public CsPropertyContent(string identifier, string type) : base(identifier, type)
+        public CsPropertyContent(string identifier, string type, IEnumerable<string>? modifiers = null) 
+            : base(identifier, type, modifiers)
         {
+
         }
 
-        public override IReadOnlyCollection<string> Modifiers => throw new NotImplementedException();
-
-        public override string ToCode(out int contentPosition, ref int indent)
+        public override Code ToCode(string indent)
         {
-            throw new NotImplementedException();
+            string body =
+@$"{indent}{Header}
+{indent}{{
+{indent}}}
+";
+            int contentPosition = body.Length - (indent.Length + "}\r\n".Length);
+            return Code.CreateCodeWithContents(body, contentPosition, true);
         }
     }
 }

@@ -117,7 +117,8 @@ namespace BuildSoft.Code.Collection.Test
 
         [TestMethod]
         [Timeout(150)]
-        public void GetStringsExecuteTimeTest()
+        [ExecutionTimeTest]
+        public void GetStringsExecutionTimeTest()
         {
             const int ElementCount = 25000;
             EnumPairs<Flag> pairs = new(ElementCount);

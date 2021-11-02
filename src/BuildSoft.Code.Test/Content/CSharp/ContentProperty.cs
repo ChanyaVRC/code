@@ -15,10 +15,10 @@ namespace BuildSoft.Code.Content.CSharp.Test
             new CsLineContent(),
         };
 
-        public static IEnumerable<CsContent> ContentsIsAbleToHaveContents
-            => Contents.Where(v => !v.GetType().IsSubclassOf(typeof(CsNoContentsContent)));
-        public static IEnumerable<CsContent> ContentsIsNotAbleToHaveContents
-            => Contents.Where(v => v.GetType().IsSubclassOf(typeof(CsNoContentsContent)));
+        //public static IEnumerable<CsContent> ContentsIsAbleToHaveContents
+        //    => Contents.Where(v => !v.GetType().IsSubclassOf(typeof(CsNoContentsContent)));
+        //public static IEnumerable<CsContent> ContentsIsNotAbleToHaveContents
+        //    => Contents.Where(v => v.GetType().IsSubclassOf(typeof(CsNoContentsContent)));
 
         [TestMethod]
         [TestCategory("CheckTarget")]

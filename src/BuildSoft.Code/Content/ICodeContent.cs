@@ -1,12 +1,15 @@
-﻿
+﻿using System.Text;
+
 namespace BuildSoft.Code.Content
 {
     public interface ICodeContent<TContent> where TContent : ICodeContent<TContent>
     {
         IReadOnlyList<TContent> Contents { get; }
 
-        public bool IsUsingContent { get; }
-
-        public string ToCode(out int contentPosition, ref int indent);
+        Code ToCode(int indent);
+        string Export();
+        void ExportTo(Stream stream) => ExportTo(stream, Encoding.Default);
+        void ExportTo(Stream stream, Encoding encoding);
+        void ExportTo(StreamWriter writer);
     }
 }

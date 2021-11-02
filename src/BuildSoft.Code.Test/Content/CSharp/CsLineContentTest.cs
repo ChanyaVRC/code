@@ -12,11 +12,18 @@ namespace BuildSoft.Code.Content.CSharp.Test
     public class CsLineContentTest
     {
         [TestMethod]
+        public void ConstructorTest()
+        {
+            CsLineContent line = new();
+            Assert.IsFalse(line.CanOperateContents);
+        }
+
+        [TestMethod]
         public void ToCodeTest()
         {
             CsLineContent line = new();
-            Assert.AreEqual("\r\n", line.ToCode(indent: 0));
-            Assert.AreEqual("\r\n", line.ToCode(indent: 1));
+            Assert.AreEqual(new Code("\r\n", 2, false, false), line.ToCode(""));
+            Assert.AreEqual(new Code("\r\n", 2, false, false), line.ToCode(" "));
         }
     }
 }

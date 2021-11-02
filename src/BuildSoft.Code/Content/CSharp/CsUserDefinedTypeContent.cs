@@ -14,39 +14,39 @@ namespace BuildSoft.Code.Content.CSharp
         public IReadOnlyCollection<string> Modifiers => _modifiers ??= new List<string>();
         private List<string>? _modifiers;
         
-        public virtual string BaseClass { get; }
-        public IReadOnlyCollection<string> BaseInterfaces => _interfaces ??= new List<string>();
-        private List<string>? _interfaces;
+        public string? SubClass { get; }
+        public IReadOnlyCollection<string> SubInterfaces => _interfaces ??= new List<string>();
+        private List<string>? _interfaces; 
 
-        public virtual string Header => !IsImmutableHeader || _header == null ? _header = CreateHeader() : _header;
+        public string Header => !IsImmutableHeader || _header == null ? _header = CreateHeader() : _header;
         public string? _header;
 
         protected bool IsImmutableHeader { get; set; } = true;
 
-        // TODO: Review of algorithm, very slow.
-        private string CreateHeader()
+        // TODO: Review of algorithm, this is very slow.
+        protected virtual string CreateHeader()
         {
-            IEnumerable<string> values = Modifiers.Append(Keyword).Append(Identifier);
-            if (string.IsNullOrEmpty(BaseClass) || BaseInterfaces.Count > 0)
-            {
-                values = values.Append(":");
+            IEnumerable<string> values = (_modifiers ?? Enumerable.Empty<string>())
+                .Append(Keyword).Append(Identifier);
 
+            if (!string.IsNullOrEmpty(SubClass) || (_interfaces != null && _interfaces.Count > 0))
+            {
                 IEnumerable<string> bases = Enumerable.Empty<string>();
-                if (string.IsNullOrEmpty(BaseClass))
+                if (!string.IsNullOrEmpty(SubClass))
                 {
-                    bases = bases.Append(BaseClass);
+                    bases = bases.Append(SubClass);
                 }
-                if (BaseInterfaces.Count > 0)
+                if (_interfaces != null && _interfaces.Count > 0)
                 {
-                    bases = bases.Concat(BaseInterfaces);
+                    bases = bases.Concat(_interfaces);
                 }
-                values = values.Append(string.Join(", ", bases.Select(x => x.Trim())));
+                values = values.Append(":").Append(string.Join(", ", bases.Select(x => x.Trim())));
             }
 
             return string.Join(' ', values.Select(x => x.Trim()));
         }
 
-        protected CsUserDefinedTypeContent(string identifier, IReadOnlyCollection<string> modifiers = null!, string baseClass = "",IReadOnlyCollection<string> baseInterfaces = null!)
+        protected CsUserDefinedTypeContent(string identifier, IReadOnlyCollection<string>? modifiers = null, string? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
         {
             Identifier = identifier;
             if (modifiers != null)
@@ -54,13 +54,12 @@ namespace BuildSoft.Code.Content.CSharp
                 _modifiers = new(modifiers);
             }
 
-            BaseClass = baseClass;
+            SubClass = subClass;
             if (baseInterfaces != null)
             {
                 _interfaces = new(baseInterfaces);
             }
         }
-
 
         public void AddContent(CsUserDefinedTypeContent content)
             => AddableContents.Add(content);
@@ -72,20 +71,18 @@ namespace BuildSoft.Code.Content.CSharp
         public bool RemoveContent(CsMemberContent content)
             => AddableContents.Remove(content);
 
-        public override string ToCode(out int contentPosition, ref int indent)
+        public override Code ToCode(string indent)
         {
-            string indentInstance = CreateIndent(indent);
+            int contentPosition;
 
-            string content =
-@$"{indentInstance}{Header}
-{indentInstance}{{
-
-{indentInstance}}}
+            string body =
+@$"{indent}{Header}
+{indent}{{
+{indent}}}
 ";
-            contentPosition = content.Length - (indentInstance.Length + "\r\n}\r\n".Length);
-            indent++;
+            contentPosition = body.Length - (indent.Length + "}\r\n".Length);
 
-            return content;
+            return Code.CreateCodeWithContents(body, contentPosition, true);
         }
     }
 }

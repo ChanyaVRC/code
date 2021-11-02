@@ -21,33 +21,33 @@ namespace BuildSoft.Code.Content.CSharp
         public bool RemoveContent(CsNamespaceContent content)
             => AddableContents.Remove(content);
 
-        public override string ToCode(out int contentPosition, ref int currentIndent)
+        public void AddContent(CsUserDefinedTypeContent content)
+            => AddableContents.Add(content);
+
+        public bool RemoveContent(CsUserDefinedTypeContent content)
+            => AddableContents.Remove(content);
+
+        public override Code ToCode(string indent)
         {
-            string oneIndent = CreateIndent(1);
             string body;
-            if (currentIndent == 0)
+            int contentPosition;
+
+            if (indent.Length == 0)
             {
-                body = $"namespace {Namespace}\r\n{{\r\n";
+                body = $"namespace {Namespace}\r\n{{\r\n}}\r\n";
 
-                contentPosition = body.Length;
-
-                body += $"\r\n}}\r\n";
+                contentPosition = body.Length - "}\r\n".Length;
             }
             else
             {
-                string indentInstance = currentIndent == 1 ? oneIndent : CreateIndent(currentIndent);
-
                 body =
-                    $"{indentInstance}namespace {Namespace}\r\n"
-                    + $"{indentInstance}{{\r\n";
+                    $"{indent}namespace {Namespace}\r\n"
+                    + $"{indent}{{\r\n"
+                    + $"{indent}}}\r\n";
 
-                contentPosition = body.Length;
-                
-                body += $"\r\n{indentInstance}}}\r\n";
+                contentPosition = body.Length - (indent.Length + "}\r\n".Length);
             }
-            currentIndent++;
-
-            return body;
+            return Code.CreateCodeWithContents(body, contentPosition, true);
         }
     }
 }

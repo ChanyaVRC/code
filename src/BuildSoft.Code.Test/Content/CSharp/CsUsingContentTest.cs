@@ -23,11 +23,11 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsUsingContent content = new("System");
 
-            CodeHelper.TabSize = 1;
-            Assert.AreEqual("using System;\r\n", content.ToCode(0));
-            Assert.AreEqual(" using System;\r\n", content.ToCode(1));
-            CodeHelper.TabSize = 2;
-            Assert.AreEqual("  using System;\r\n", content.ToCode(1));
+            string body = "using System;\r\n";
+            Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(""));
+
+            body = " " + body;
+            Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(" "));
         }
     }
 }

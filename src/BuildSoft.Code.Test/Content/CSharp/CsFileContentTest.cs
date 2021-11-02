@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace BuildSoft.Code.Content.CSharp.Test
 {
@@ -12,26 +10,6 @@ namespace BuildSoft.Code.Content.CSharp.Test
     [TestOf(typeof(CsFileContent))]
     public class CsFileContentTest
     {
-        private readonly CsFileContent _exportToTestTarget = new();
-        private string _exportedCode = string.Empty;
-        private byte[] _expectedDefaultEncordingCode = null!;
-        private byte[] _expectedUtf32EncordingCode = null!;
-
-        [TestInitialize]
-        public void InitializeForExportToTest()
-        {
-            _exportToTestTarget.AddContent(new CsUsingContent("System"));
-            _exportToTestTarget.AddContent(new CsLineContent());
-
-            CsNamespaceContent content = new("Test");
-            content.AddContent(new CsNamespaceContent("Content"));
-            _exportToTestTarget.AddContent(content);
-
-            _exportedCode = _exportToTestTarget.Export();
-            _expectedDefaultEncordingCode = Encoding.Default.GetBytes(_exportedCode);
-            _expectedUtf32EncordingCode = Encoding.UTF32.GetBytes(_exportedCode);
-        }
-
         [TestMethod]
         public void ConstructorTest()
         {
@@ -43,15 +21,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsFileContent content = new();
 
-            int indent = 0;
-            Assert.AreEqual("", content.ToCode(out int position, ref indent));
-            Assert.AreEqual(0, position);
-            Assert.AreEqual(0, indent);
-
-            indent = 1;
-            Assert.AreEqual("", content.ToCode(out position, ref indent));
-            Assert.AreEqual(0, position);
-            Assert.AreEqual(1, indent);
+            Assert.AreEqual(new Code("", 0, false, true), content.ToCode(""));
+            Assert.AreEqual(new Code("", 0, false, true), content.ToCode(" "));
         }
 
         [TestMethod]
@@ -123,41 +94,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual(1, testTarget.Contents.Count);
             Assert.AreSame(namespaceContent1, testTarget.Contents[0]);
         }
-
-        [TestMethod]
-        public void ExportAsStringTest()
-        {
-            CodeHelper.TabSize = 1;
-            string expectedCode =
-@"using System;
-
-namespace Test
-{
- namespace Content
- {
-
- }
-
-}
-";
-
-            Assert.AreEqual(expectedCode, _exportToTestTarget.Export());
-        }
-
-        [TestMethod]
-        public void ExportToStreamTest()
-        {
-            using var ms = new MemoryStream();
-            _exportToTestTarget.Export(ms);
-            CollectionAssert.AreEqual(_expectedDefaultEncordingCode, ms.ToArray());
-        }
-
-        [TestMethod]
-        public void ExportToStreamEncordingTest()
-        {
-            using var ms = new MemoryStream();
-            _exportToTestTarget.Export(ms, Encoding.UTF32);
-            CollectionAssert.AreEqual(_expectedUtf32EncordingCode, ms.ToArray());
-        }
     }
 }
+
+

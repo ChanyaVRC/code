@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public class CsUsingContent : CsNoContentsContent
+    public class CsUsingContent : CsContent
     {
         public string Namespace { get; }
+        private string CodeBody => _codeBodyCache ??= $"using {Namespace};\r\n";
+        private string? _codeBodyCache;
 
         public CsUsingContent(string @namespace)
         {
+            CanOperateContents = false;
             Namespace = @namespace;
         }
 
-        public override string ToCode(int indent)
-        {
-            return $"{CreateIndent(indent)}using {Namespace};\r\n";
-        }
+        public override Code ToCode(string indent) 
+            => Code.CreateCodeWithNoContents(indent.Length == 0 ? CodeBody : indent + CodeBody);
     }
 }

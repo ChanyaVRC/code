@@ -7,29 +7,14 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public class CsFieldContent : CsMemberContent, INoContentsContent<CsContent>
+    public class CsFieldContent : CsMemberContent
     {
-        private List<string>? _attributes;
-        private CsContent[]? _emptyContent;
-
-        public override IReadOnlyCollection<string> Modifiers
-            => _attributes ??= new List<string>();
-        public override IReadOnlyList<CsContent> Contents
-            => _emptyContent ??= Array.Empty<CsContent>();
-
-        public CsFieldContent(string identifier, string type, IEnumerable<string> attributes = null!) : base(identifier, type)
+        public CsFieldContent(string identifier, string type, IEnumerable<string>? modifiers = null) : base(identifier, type, modifiers)
         {
-            if (attributes != null)
-            {
-                _attributes = new List<string>(attributes);
-            }
+            CanOperateContents = false;
         }
 
-        public string ToCode(int indent)
-            => $"{CreateIndent(indent)}{Header};\r\n";
-
-        public override string ToCode(out int contentPosition, ref int indent)
-            => ContentHelper.ToCodeForNoContent(ToCode, out contentPosition, indent);
-
+        public override Code ToCode(string indent)
+            => Code.CreateCodeWithNoContents($"{indent}{Header};\r\n");
     }
 }
