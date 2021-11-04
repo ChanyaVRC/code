@@ -16,11 +16,19 @@ namespace BuildSoft.Code.Content.CSharp
 
         public override Code ToCode(string indent)
         {
-            string body =
+            string body;
+            if (indent.Length == 0)
+            {
+                body = $"{Header}\r\n{{\r\n}}\r\n";
+            }
+            else
+            {
+                body =
 @$"{indent}{Header}
 {indent}{{
 {indent}}}
 ";
+            }
             int contentPosition = body.Length - (indent.Length + "}\r\n".Length);
             return Code.CreateCodeWithContents(body, contentPosition, true);
         }

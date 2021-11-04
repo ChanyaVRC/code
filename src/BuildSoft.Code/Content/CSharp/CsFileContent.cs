@@ -9,14 +9,13 @@ namespace BuildSoft.Code.Content.CSharp
     public class CsFileContent 
         : CsContent, IAvailable<CsNamespaceContent>, IAvailable<CsUsingContent>
     {
+        private static readonly Code _code = Code.CreateCodeWithContents("", 0, false);
+ 
         public CsFileContent()
         {
         }
 
-        public override Code ToCode(string indent)
-        {
-            return Code.CreateCodeWithContents("", 0, false);
-        }
+        public override Code ToCode(string indent) => _code;
 
         public void AddContent(CsNamespaceContent content)
             => AddableContents.Add(content);

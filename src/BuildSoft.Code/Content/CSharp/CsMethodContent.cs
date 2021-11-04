@@ -15,8 +15,13 @@ namespace BuildSoft.Code.Content.CSharp
         public string ArgumentList => CreateArgumentList();
         protected virtual string CreateArgumentList()
         {
+            if (_arguments == null || _arguments.Count <= 0)
+            {
+                return string.Empty;
+            }
+
             StringBuilder builder = new();
-            foreach (var (type, identifier) in Arguments)
+            foreach (var (type, identifier) in _arguments)
             {
                 if (builder.Length != 0)
                 {
@@ -46,13 +51,21 @@ namespace BuildSoft.Code.Content.CSharp
 
         public override Code ToCode(string indent)
         {
-            string code =
+            string body;
+            if (indent.Length == 0)
+            {
+                body = $"{Header}({ArgumentList})\r\n{{\r\n}}\r\n";
+            }
+            else
+            {
+                body =
 $@"{indent}{Header}({ArgumentList})
 {indent}{{
 {indent}}}
 ";
-            int position = code.Length - "}\r\n".Length - indent.Length;
-            return Code.CreateCodeWithContents(code, position, true);
+            }
+            int position = body.Length - "}\r\n".Length - indent.Length;
+            return Code.CreateCodeWithContents(body, position, true);
         }
     }
 }

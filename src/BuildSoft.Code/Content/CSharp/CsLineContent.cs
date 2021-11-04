@@ -8,11 +8,11 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsLineContent : CsContent
     {
+        private static readonly Code _code = Code.CreateCodeWithNoContents("\r\n");
         public CsLineContent()
         {
             CanOperateContents = false;
         }
-        public override Code ToCode(string indent) 
-            => Code.CreateCodeWithNoContents("\r\n");
+        public override Code ToCode(string indent) => _code;
     }
 }

@@ -35,8 +35,6 @@ namespace BuildSoft.Code.Content.CSharp
             if (indent.Length == 0)
             {
                 body = $"namespace {Namespace}\r\n{{\r\n}}\r\n";
-
-                contentPosition = body.Length - "}\r\n".Length;
             }
             else
             {
@@ -44,9 +42,9 @@ namespace BuildSoft.Code.Content.CSharp
                     $"{indent}namespace {Namespace}\r\n"
                     + $"{indent}{{\r\n"
                     + $"{indent}}}\r\n";
-
-                contentPosition = body.Length - (indent.Length + "}\r\n".Length);
             }
+            contentPosition = body.Length - (indent.Length + "}\r\n".Length);
+         
             return Code.CreateCodeWithContents(body, contentPosition, true);
         }
     }
