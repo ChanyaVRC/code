@@ -7,6 +7,7 @@ namespace BuildSoft.Code.Content
         IReadOnlyList<TContent> Contents { get; }
 
         Code ToCode(int indent);
+        Code ToCode(string indent);
         string Export();
         void ExportTo(Stream stream) => ExportTo(stream, Encoding.Default);
         void ExportTo(Stream stream, Encoding encoding);

@@ -1,12 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
 using System.IO;
+using BuildSoft.Code.Content.CSharp;
 
-namespace BuildSoft.Code.Content.CSharp.Test
+namespace BuildSoft.Code.Content.Test
 {
     [TestClass]
-    [TestOf(typeof(CsContent))]
-    public class CsContentExportTest
+    [TestOf(typeof(CodeContent<>))]
+    public class CodeContentExportTest
     {
         private readonly CsFileContent _exportToTestTarget = new();
         private string _exportedCode = null!;

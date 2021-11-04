@@ -20,6 +20,7 @@ namespace BuildSoft.Code.Content.Test
             public void ExportTo(Stream stream, Encoding encoding) => throw new NotImplementedException();
             public void ExportTo(StreamWriter writer) => throw new NotImplementedException();
             public Code ToCode(int indent) => throw new NotImplementedException();
+            public Code ToCode(string indent) => throw new NotImplementedException();
         }
 
         [TestMethod]

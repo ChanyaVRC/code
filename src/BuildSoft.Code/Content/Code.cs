@@ -13,14 +13,14 @@ namespace BuildSoft.Code.Content
         public string Body { get; internal init; }
         public int ContentStartIndex { get; internal init; }
         public bool NeedsIndent { get; internal init; }
-        public bool HasContent { get; internal init; }
+        public bool HasContents { get; internal init; }
 
         internal Code(string body, int contentPosition, bool needsIndent, bool hasContent)
         {
             Body = body;
             ContentStartIndex = contentPosition;
             NeedsIndent = needsIndent;
-            HasContent = hasContent;
+            HasContents = hasContent;
         }
 
         public static Code CreateCodeWithContents(string body, int contentPosition, bool needsIndent) 
@@ -33,7 +33,7 @@ namespace BuildSoft.Code.Content
             body = Body;
             contentPosition = ContentStartIndex;
             needsIndent = NeedsIndent;
-            hasContent = HasContent;
+            hasContent = HasContents;
         }
     }
 }
