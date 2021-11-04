@@ -29,8 +29,8 @@ namespace BuildSoft.Code.Content.CSharp
 {indent}}}
 ";
             }
-            int contentPosition = body.Length - (indent.Length + "}\r\n".Length);
-            return Code.CreateCodeWithContents(body, contentPosition, true);
+            int contentsStartIndex = body.Length - (indent.Length + "}\r\n".Length);
+            return Code.CreateCodeWithContents(body, contentsStartIndex, true);
         }
     }
 }

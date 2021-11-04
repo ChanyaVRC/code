@@ -36,9 +36,9 @@ namespace BuildSoft.Code.Content
                     indentCount--;
                     indent = CodeHelper.CreateOrGetIndentBySpaceCount(indentCount * tabSize);
                 }
-                if (code.Body.Length - code.ContentStartIndex > 0)
+                if (code.Body.Length - code.ContentsStartIndex > 0)
                 {
-                    builder.Append(code.Body, code.ContentStartIndex, code.Body.Length - code.ContentStartIndex);
+                    builder.Append(code.Body, code.ContentsStartIndex, code.Body.Length - code.ContentsStartIndex);
                 }
 
                 while (enumerator.MoveNext())
@@ -46,11 +46,11 @@ namespace BuildSoft.Code.Content
                     CodeContent<T> content = enumerator.Current;
 
                     Code currentCode = content.ToCode(indent);
-                    builder.Append(currentCode.Body, 0, currentCode.ContentStartIndex);
+                    builder.Append(currentCode.Body, 0, currentCode.ContentsStartIndex);
 
                     if (!currentCode.HasContents)
                     {
-                        Debug.Assert(currentCode.Body.Length == currentCode.ContentStartIndex);
+                        Debug.Assert(currentCode.Body.Length == currentCode.ContentsStartIndex);
                         continue;
                     }
 
@@ -69,7 +69,7 @@ namespace BuildSoft.Code.Content
                     }
                     else
                     {
-                        builder.Append(currentCode.Body, currentCode.ContentStartIndex, currentCode.Body.Length - currentCode.ContentStartIndex);
+                        builder.Append(currentCode.Body, currentCode.ContentsStartIndex, currentCode.Body.Length - currentCode.ContentsStartIndex);
                     }
                 }
             }
