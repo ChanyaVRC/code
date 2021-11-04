@@ -20,19 +20,7 @@ namespace BuildSoft.Code.Content.CSharp
                 return string.Empty;
             }
 
-            StringBuilder builder = new();
-            foreach (var (type, identifier) in _arguments)
-            {
-                if (builder.Length != 0)
-                {
-                    builder.Append(',');
-                    builder.Append(' ');
-                }
-                builder.Append(type.Trim());
-                builder.Append(' ');
-                builder.Append(identifier.Trim());
-            }
-            return builder.ToString();
+            return string.Join(", ", _arguments);
         }
 
         public CsMethodContent(
