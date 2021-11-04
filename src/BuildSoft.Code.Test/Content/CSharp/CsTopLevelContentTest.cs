@@ -8,7 +8,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
 {
     [TestClass]
     [TestOf(typeof(CsTopLevelContent))]
-    public class CsFileContentTest
+    public class CsTopLevelContentTest
     {
         [TestMethod]
         public void ConstructorTest()
