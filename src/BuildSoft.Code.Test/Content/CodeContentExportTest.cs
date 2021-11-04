@@ -9,7 +9,7 @@ namespace BuildSoft.Code.Content.Test
     [TestOf(typeof(CodeContent<>))]
     public class CodeContentExportTest
     {
-        private readonly CsFileContent _exportToTestTarget = new();
+        private readonly CsTopLevelContent _exportToTestTarget = new();
         private string _exportedCode = null!;
         private byte[] _expectedDefaultEncordingCode = null!;
         private byte[] _expectedUtf32EncordingCode = null!;

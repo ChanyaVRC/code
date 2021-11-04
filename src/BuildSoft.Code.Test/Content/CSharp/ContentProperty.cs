@@ -9,7 +9,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
     {
         public static List<CsContent> Contents => new()
         {
-            new CsFileContent(),
+            new CsTopLevelContent(),
             new CsNamespaceContent("Test"),
             new CsUsingContent("System"),
             new CsLineContent(),

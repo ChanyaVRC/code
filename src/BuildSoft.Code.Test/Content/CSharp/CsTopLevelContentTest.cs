@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.Content.CSharp.Test
 {
     [TestClass]
-    [TestOf(typeof(CsFileContent))]
+    [TestOf(typeof(CsTopLevelContent))]
     public class CsFileContentTest
     {
         [TestMethod]
         public void ConstructorTest()
         {
-            _ = new CsFileContent();
+            _ = new CsTopLevelContent();
         }
 
         [TestMethod]
         public void ToCodeTest()
         {
-            CsFileContent content = new();
+            CsTopLevelContent content = new();
 
             Assert.AreEqual(new Code("", 0, false, true), content.ToCode(""));
             Assert.AreEqual(new Code("", 0, false, true), content.ToCode(" "));
@@ -28,7 +28,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod]
         public void AddNamespaceContentTest()
         {
-            CsFileContent content = new();
+            CsTopLevelContent content = new();
             CsNamespaceContent namespaceContent = new("Test");
 
             Assert.AreEqual(0, content.Contents.Count);
@@ -42,7 +42,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod]
         public void AddUsingContentTest()
         {
-            CsFileContent content = new();
+            CsTopLevelContent content = new();
             CsUsingContent usingContent = new("System");
 
             Assert.AreEqual(0, content.Contents.Count);
@@ -56,7 +56,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod]
         public void RemoveNamespaceContentTest()
         {
-            CsFileContent testTarget = new();
+            CsTopLevelContent testTarget = new();
             CsNamespaceContent namespaceContent1 = new("Test1");
             CsNamespaceContent namespaceContent2 = new("Test2");
 
@@ -77,7 +77,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod]
         public void RemoveUsingContentTest()
         {
-            CsFileContent testTarget = new();
+            CsTopLevelContent testTarget = new();
             CsUsingContent namespaceContent1 = new("System");
             CsUsingContent namespaceContent2 = new("System.Collections.Generic");
 

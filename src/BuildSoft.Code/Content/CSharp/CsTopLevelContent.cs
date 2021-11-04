@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public class CsFileContent 
+    public class CsTopLevelContent 
         : CsContent, IAvailable<CsNamespaceContent>, IAvailable<CsUsingContent>
     {
         private static readonly Code _code = Code.CreateCodeWithContents("", 0, false);
  
-        public CsFileContent()
+        public CsTopLevelContent()
         {
         }
 
