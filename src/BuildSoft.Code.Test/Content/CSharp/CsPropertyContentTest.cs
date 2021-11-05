@@ -25,11 +25,19 @@ namespace BuildSoft.Code.Content.CSharp.Test
             CsPropertyContent content = new("Property", "Type");
 
             string expectedBody =
+@"Type Property
+{
+}
+";
+            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+            Assert.AreEqual(expected, content.ToCode(""));
+
+            expectedBody =
 @" Type Property
  {
  }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - " }\r\n".Length, true, true);
+            expected = new(expectedBody, expectedBody.Length - " }\r\n".Length, true, true);
             Assert.AreEqual(expected, content.ToCode(" "));
         }
     }

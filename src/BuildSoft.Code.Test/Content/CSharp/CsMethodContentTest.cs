@@ -36,11 +36,19 @@ namespace BuildSoft.Code.Content.CSharp.Test
             CsMethodContent content = new("Identifier", "ReturnType", _modifier, _arguments);
 
             string expectedBody =
+@"public async ReturnType Identifier(int arg1, string arg2)
+{
+}
+";
+            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+            Assert.AreEqual(expected, content.ToCode(""));
+
+            expectedBody =
 @"  public async ReturnType Identifier(int arg1, string arg2)
   {
   }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "  }\r\n".Length, true, true);
+            expected = new(expectedBody, expectedBody.Length - "  }\r\n".Length, true, true);
             Assert.AreEqual(expected, content.ToCode("  "));
         }
     }
