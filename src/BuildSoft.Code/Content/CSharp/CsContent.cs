@@ -8,8 +8,5 @@ namespace BuildSoft.Code.Content.CSharp
             => AddableContents.Add(content);
         public bool RemoveContent(CsLineContent content)
             => AddableContents.Remove(content);
-
-        public void ClearContents()
-            => AddableContents.Clear();
     }
 }

@@ -69,20 +69,6 @@ namespace BuildSoft.Code.Content.CSharp.Test
         }
 
         [TestMethod]
-        public void ClearContentsTest()
-        {
-            CsLineContent line1 = new();
-            CsLineContent line2 = new();
-
-            AddContent(line1);
-            AddContent(line2);
-
-            Assert.AreEqual(2, Contents.Count);
-            ClearContents();
-            Assert.AreEqual(0, Contents.Count);
-        }
-
-        [TestMethod]
         public void ToCodeTest()
         {
             CodeHelper.TabSize = 0;

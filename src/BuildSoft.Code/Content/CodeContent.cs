@@ -19,6 +19,9 @@ namespace BuildSoft.Code.Content
             protected set => AddableContents.CanOperate = value;
         }
 
+        public void ClearContents()
+            => AddableContents.Clear();
+
         public string Export()
         {
             StringBuilder builder = new();
@@ -94,6 +97,7 @@ namespace BuildSoft.Code.Content
             stream.Write(writeBytes);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExportTo(StreamWriter writer)
         {
             writer.Write(Export());

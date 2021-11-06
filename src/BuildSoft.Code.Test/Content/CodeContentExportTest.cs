@@ -33,6 +33,20 @@ namespace BuildSoft.Code.Content.Test
         }
 
         [TestMethod]
+        public void ClearContentsTest()
+        {
+            CsTopLevelContent content = new();
+            CsLineContent line1 = new();
+            CsLineContent line2 = new();
+            content.AddContent(line1);
+            content.AddContent(line2);
+
+            Assert.AreEqual(2, content.Contents.Count);
+            content.ClearContents();
+            Assert.AreEqual(0, content.Contents.Count);
+        }
+
+        [TestMethod]
         public void ExportAsStringTest()
         {
             CodeHelper.TabSize = 1;
