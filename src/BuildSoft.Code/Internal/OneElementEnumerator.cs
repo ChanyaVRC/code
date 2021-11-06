@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Internal
 {
-    internal class OneElementEnumerator<T> : IEnumerator<T>
+    internal class OneElementEnumerator<T> : IEnumerator<T> where T : notnull
     {
         private bool _hasElement = true;
         private readonly T _value;
 
         public T Current => _value;
 
-        object IEnumerator.Current => _value!;
+        object IEnumerator.Current => _value;
 
         public OneElementEnumerator(T value)
         {
