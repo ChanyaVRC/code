@@ -13,7 +13,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
     public class CsMethodContentTest
     {
         private static readonly CsArgumentDefinition[] _arguments =
-            new CsArgumentDefinition[] { new("int", "arg1"), new("string", "arg2") };
+            new CsArgumentDefinition[] { new("int", "arg1"), new("string", "arg2", "in") };
         private static readonly string[] _modifier =
             new string[] { "public", "async" };
         
@@ -27,7 +27,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
             content = new("Identifier", "ReturnType", null, _arguments);
             Assert.AreNotSame(_arguments, content.Arguments);
             Assert.AreEqual(2, content.Arguments.Count);
-            Assert.AreEqual("int arg1, string arg2", content.ArgumentList);
+            Assert.AreEqual("int arg1, in string arg2", content.ArgumentList);
         }
 
         [TestMethod()]
@@ -36,7 +36,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
             CsMethodContent content = new("Identifier", "ReturnType", _modifier, _arguments);
 
             string expectedBody =
-@"public async ReturnType Identifier(int arg1, string arg2)
+@"public async ReturnType Identifier(int arg1, in string arg2)
 {
 }
 ";
@@ -44,7 +44,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual(expected, content.ToCode(""));
 
             expectedBody =
-@"  public async ReturnType Identifier(int arg1, string arg2)
+@"  public async ReturnType Identifier(int arg1, in string arg2)
   {
   }
 ";
