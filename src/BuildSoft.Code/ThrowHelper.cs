@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BuildSoft.Code.Internal;
+
 namespace BuildSoft.Code
 {
     internal class ThrowHelper
     {
-
         [DoesNotReturn]
         public static void ThrowInvalidOperationException()
             => throw new InvalidOperationException();
@@ -30,12 +31,13 @@ namespace BuildSoft.Code
             }
         }
 
-        public static void ThrowArgumentOutOfRangeExceptionIfNegative(int value)
+        public static void ThrowArgumentOutOfRangeExceptionIfNegative(int value, ParamName paramName)
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(paramName.GetParamName());
             }
         }
+
     }
 }

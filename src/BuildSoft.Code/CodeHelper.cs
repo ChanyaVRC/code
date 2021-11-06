@@ -26,7 +26,7 @@ namespace BuildSoft.Code
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string CreateOrGetIndentBySpaceCount(int count)
         {
-            ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(count);
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(count, ParamName.count);
             if (count == 0)
             {
                 return string.Empty;

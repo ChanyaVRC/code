@@ -28,11 +28,7 @@ namespace BuildSoft.Code.Generator.CSharp
             get => _currentIndent;
             set
             {
-                if (value < 0)
-                {
-                    // TODO: Use ThrowHelper
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
+                ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(value, ParamName.value);
                 _currentIndent = value;
             }
         }
