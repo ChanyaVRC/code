@@ -84,7 +84,7 @@ namespace BuildSoft.Code.Generator.CSharp
             if (content.Length > nameof(Attribute).Length && content.EndsWith(nameof(Attribute)))
             {
                 // trim string, "Attribute"
-                content = content.Substring(0, content.Length - nameof(Attribute).Length);
+                content = content[..^nameof(Attribute).Length];
             }
 
             return content;
