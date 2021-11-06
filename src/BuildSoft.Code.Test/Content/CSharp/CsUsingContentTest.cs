@@ -16,10 +16,15 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsUsingContent content = new("System");
             Assert.AreEqual("System", content.Namespace);
+            Assert.IsFalse(content.IsGlobal);
+
+            content = new("System", true);
+            Assert.AreEqual("System", content.Namespace, true);
+            Assert.IsTrue(content.IsGlobal);
         }
 
         [TestMethod]
-        public void ToCodeTest()
+        public void ToCodeNotGlobalTest()
         {
             CsUsingContent content = new("System");
 
@@ -28,6 +33,15 @@ namespace BuildSoft.Code.Content.CSharp.Test
 
             body = " " + body;
             Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(" "));
+        }
+
+        [TestMethod]
+        public void ToCodeGlobalTest()
+        {
+            CsUsingContent content = new("System", true);
+
+            string body = "global using System;\r\n";
+            Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(""));
         }
     }
 }

@@ -9,13 +9,33 @@ namespace BuildSoft.Code.Content.CSharp
     public class CsUsingContent : CsContent
     {
         public string Namespace { get; }
-        private string CodeBody => _codeBodyCache ??= $"using {Namespace};\r\n";
+        public bool IsGlobal { get; }
+        private string CodeBody
+        {
+            get
+            {
+                if (_codeBodyCache == null)
+                {
+                    if (IsGlobal)
+                    {
+                        _codeBodyCache = $"global using {Namespace};\r\n";
+                    }
+                    else
+                    {
+                        _codeBodyCache = $"using {Namespace};\r\n";
+                    }
+                }
+
+                return _codeBodyCache;
+            }
+        }
         private string? _codeBodyCache;
 
-        public CsUsingContent(string @namespace)
+        public CsUsingContent(string @namespace, bool isGlobal = false)
         {
             CanOperateContents = false;
             Namespace = @namespace;
+            IsGlobal = isGlobal;
         }
 
         public override Code ToCode(string indent) 
