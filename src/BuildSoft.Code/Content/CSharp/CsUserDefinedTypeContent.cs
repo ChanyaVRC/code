@@ -19,7 +19,7 @@ namespace BuildSoft.Code.Content.CSharp
         private List<string>? _interfaces; 
 
         public string Header => !IsImmutableHeader || _header == null ? _header = CreateHeader() : _header;
-        public string? _header;
+        private string? _header;
 
         protected bool IsImmutableHeader { get; set; } = true;
 
