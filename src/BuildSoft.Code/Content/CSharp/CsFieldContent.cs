@@ -9,7 +9,8 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsFieldContent : CsMemberContent
     {
-        public CsFieldContent(string identifier, string type, IEnumerable<string>? modifiers = null) : base(identifier, type, modifiers)
+        public CsFieldContent(CsIdentifier identifier, string type, IEnumerable<string>? modifiers = null)
+            : base(identifier, type, modifiers)
         {
             CanOperateContents = false;
         }

@@ -28,7 +28,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void ConstructorTest()
         {
             CsMemberContentTest content = new("Test", "Type");
-            Assert.AreEqual("Test", content.Identifier);
+            Assert.AreEqual("Test", content.Identifier.Value);
             Assert.AreEqual("Type", content.Type);
             Assert.AreEqual("Type Test", content.Header);
             Assert.AreEqual(0, content.Modifiers.Count);

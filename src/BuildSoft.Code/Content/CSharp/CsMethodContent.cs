@@ -24,7 +24,7 @@ namespace BuildSoft.Code.Content.CSharp
         }
 
         public CsMethodContent(
-            string identifier,
+            CsIdentifier identifier,
             string returnType,
             IEnumerable<string>? modifiers = null,
             IEnumerable<CsArgumentDefinition>? arguments = null)

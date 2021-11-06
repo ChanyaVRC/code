@@ -1,6 +1,6 @@
 ﻿namespace BuildSoft.Code.Content.CSharp
 {
-    public record CsArgumentDefinition(string Type, string Identifier, string? Modifier = null)
+    public record CsArgumentDefinition(string Type, CsIdentifier Identifier, string? Modifier = null)
     {
         public override string ToString()
         {

@@ -19,7 +19,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
 
             CsFieldContent content = new("identifier", "int", modifiers);
             
-            Assert.AreEqual("identifier", content.Identifier);
+            Assert.AreEqual("identifier", content.Identifier.Value);
             Assert.AreEqual("int", content.Type);
             CollectionAssert.AreEqual(modifiers, content.Modifiers.ToArray());
         }
