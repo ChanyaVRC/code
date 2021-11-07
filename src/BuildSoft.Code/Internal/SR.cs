@@ -11,15 +11,17 @@ namespace BuildSoft.Code.Internal
         public static string GetParamName(this ParamName paramName)
             => paramName switch
             {
-                ParamName.value => "value",
-                ParamName.arg => "arg",
-                ParamName.arg0 => "arg0",
-                ParamName.arg1 => "arg1",
-                ParamName.arg2 => "arg2",
-                ParamName.arg3 => "arg3",
-                ParamName.index => "index",
-                ParamName.count => "count",
-                ParamName.length => "length",
+                ParamName.value => nameof(ParamName.value),
+                ParamName.arg => nameof(ParamName.arg),
+                ParamName.arg0 => nameof(ParamName.arg0),
+                ParamName.arg1 => nameof(ParamName.arg1),
+                ParamName.arg2 => nameof(ParamName.arg2),
+                ParamName.arg3 => nameof(ParamName.arg3),
+                ParamName.index => nameof(ParamName.index),
+                ParamName.count => nameof(ParamName.count),
+                ParamName.length => nameof(ParamName.length),
+                ParamName.name => nameof(ParamName.name),
+                ParamName.fullName => nameof(ParamName.fullName),
                 _ => paramName.ToString(),
             };
     }

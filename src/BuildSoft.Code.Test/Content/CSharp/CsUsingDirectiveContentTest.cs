@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.Content.CSharp.Test
 {
     [TestClass]
-    [TestOf(typeof(CsUsingContent))]
-    public class CsUsingContentTest
+    [TestOf(typeof(CsUsingDirectiveContent))]
+    public class CsUsingDirectiveContentTest
     {
         [TestMethod]
         public void ConstructorTest()
         {
-            CsUsingContent content = new("System");
-            Assert.AreEqual("System", content.Namespace);
+            CsUsingDirectiveContent content = new("System");
+            Assert.AreEqual("System", content.Namespace.Value);
             Assert.IsFalse(content.IsGlobal);
 
             content = new("System", true);
-            Assert.AreEqual("System", content.Namespace, true);
+            Assert.AreEqual("System", content.Namespace.Value, true);
             Assert.IsTrue(content.IsGlobal);
         }
 
         [TestMethod]
         public void ToCodeNotGlobalTest()
         {
-            CsUsingContent content = new("System");
+            CsUsingDirectiveContent content = new("System");
 
             string body = "using System;\r\n";
             Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(""));
@@ -38,7 +38,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod]
         public void ToCodeGlobalTest()
         {
-            CsUsingContent content = new("System", true);
+            CsUsingDirectiveContent content = new("System", true);
 
             string body = "global using System;\r\n";
             Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(""));

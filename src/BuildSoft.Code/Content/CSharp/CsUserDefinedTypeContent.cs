@@ -14,7 +14,7 @@ namespace BuildSoft.Code.Content.CSharp
         public IReadOnlyCollection<string> Modifiers => _modifiers ??= new List<string>();
         private List<string>? _modifiers;
         
-        public string? SubClass { get; }
+        public CsType? SubClass { get; }
         public IReadOnlyCollection<string> SubInterfaces => _interfaces ??= new List<string>();
         private List<string>? _interfaces; 
 
@@ -29,12 +29,12 @@ namespace BuildSoft.Code.Content.CSharp
             IEnumerable<string> values = (_modifiers ?? Enumerable.Empty<string>())
                 .Append(Keyword).Append(Identifier.Value);
 
-            if (!string.IsNullOrEmpty(SubClass) || (_interfaces != null && _interfaces.Count > 0))
+            if (SubClass != null || (_interfaces != null && _interfaces.Count > 0))
             {
                 IEnumerable<string> bases = Enumerable.Empty<string>();
-                if (!string.IsNullOrEmpty(SubClass))
+                if (SubClass != null)
                 {
-                    bases = bases.Append(SubClass);
+                    bases = bases.Append(SubClass.GetOptimizedName());
                 }
                 if (_interfaces != null && _interfaces.Count > 0)
                 {
@@ -46,7 +46,7 @@ namespace BuildSoft.Code.Content.CSharp
             return string.Join(' ', values.Select(x => x.Trim()));
         }
 
-        protected CsUserDefinedTypeContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, string? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
+        protected CsUserDefinedTypeContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
         {
             Identifier = identifier;
             if (modifiers != null)

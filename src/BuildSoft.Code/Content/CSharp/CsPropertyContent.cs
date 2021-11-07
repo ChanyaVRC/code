@@ -8,7 +8,7 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsPropertyContent : CsMemberContent
     {
-        public CsPropertyContent(CsIdentifier identifier, string type, IEnumerable<string>? modifiers = null) 
+        public CsPropertyContent(CsIdentifier identifier, CsType type, IEnumerable<string>? modifiers = null) 
             : base(identifier, type, modifiers)
         {
 

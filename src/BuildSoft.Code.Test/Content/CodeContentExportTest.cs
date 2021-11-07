@@ -17,8 +17,8 @@ namespace BuildSoft.Code.Content.Test
         [TestInitialize]
         public void InitializeForExportToTest()
         {
-            _exportToTestTarget.AddContent(new CsUsingContent("System"));
-            _exportToTestTarget.AddContent(new CsUsingContent("Microsoft.VisualStudio.TestTools.UnitTesting.Logging"));
+            _exportToTestTarget.AddContent(new CsUsingDirectiveContent("System"));
+            _exportToTestTarget.AddContent(new CsUsingDirectiveContent("Microsoft.VisualStudio.TestTools.UnitTesting.Logging"));
             _exportToTestTarget.AddContent(new CsLineContent());
 
             CsNamespaceContent content = new("Test1");

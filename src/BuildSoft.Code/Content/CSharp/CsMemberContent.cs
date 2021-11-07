@@ -9,7 +9,7 @@ namespace BuildSoft.Code.Content.CSharp
     public abstract class CsMemberContent : CsContent, IModifiable
     {
         public CsIdentifier Identifier { get; }
-        public string Type { get; }
+        public CsType Type { get; }
 
         private List<string>? _modifiers;
         public IReadOnlyCollection<string> Modifiers
@@ -19,11 +19,11 @@ namespace BuildSoft.Code.Content.CSharp
         protected bool IsImmutableHeader { get; set; } = true;
 
         protected virtual string CreateHeader()
-            => string.Join(' ', Modifiers.Append(Type).Append(Identifier.Value));
+            => string.Join(' ', Modifiers.Append(Type.GetOptimizedName()).Append(Identifier.Value));
 
         private string? _header;
 
-        public CsMemberContent(CsIdentifier identifier, string type, IEnumerable<string>? modifiers = null)
+        public CsMemberContent(CsIdentifier identifier, CsType type, IEnumerable<string>? modifiers = null)
         {
             Identifier = identifier;
             Type = type;

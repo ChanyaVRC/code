@@ -15,7 +15,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void ConstructorTest()
         {
             CsNamespaceContent content = new("Test");
-            Assert.AreEqual("Test", content.Namespace);
+            Assert.AreEqual("Test", content.Namespace.Value);
         }
 
         [TestMethod]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.Content.CSharp
 {
     public class CsTopLevelContent 
-        : CsContent, IAvailable<CsNamespaceContent>, IAvailable<CsUsingContent>
+        : CsContent, IAvailable<CsNamespaceContent>, IAvailable<CsUsingDirectiveContent>
     {
         private static readonly Code _code = Code.CreateCodeWithContents("", 0, false);
  
@@ -19,12 +19,12 @@ namespace BuildSoft.Code.Content.CSharp
 
         public void AddContent(CsNamespaceContent content)
             => AddableContents.Add(content);
-        public void AddContent(CsUsingContent content)
+        public void AddContent(CsUsingDirectiveContent content)
             => AddableContents.Add(content);
 
         public bool RemoveContent(CsNamespaceContent content)
             => AddableContents.Remove(content);
-        public bool RemoveContent(CsUsingContent content)
+        public bool RemoveContent(CsUsingDirectiveContent content)
             => AddableContents.Remove(content);
     }
 }

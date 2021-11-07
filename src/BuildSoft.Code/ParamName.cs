@@ -17,5 +17,7 @@ namespace BuildSoft.Code
         index,
         count,
         length,
+        name,
+        fullName,
     }
 }

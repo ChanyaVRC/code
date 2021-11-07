@@ -31,6 +31,10 @@ namespace BuildSoft.Code
             }
         }
 
+        public static void ThrowArgumentException(string? message, ParamName paramName)
+        {
+            throw new ArgumentException(message, paramName.GetParamName());
+        }
         public static void ThrowArgumentOutOfRangeExceptionIfNegative(int value, ParamName paramName)
         {
             if (value < 0)

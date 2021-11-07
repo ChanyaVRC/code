@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public class CsUsingContent : CsContent
+    public class CsUsingDirectiveContent : CsContent
     {
-        public string Namespace { get; }
+        public CsNamespace Namespace { get; }
         public bool IsGlobal { get; }
         private string CodeBody
         {
@@ -31,7 +31,7 @@ namespace BuildSoft.Code.Content.CSharp
         }
         private string? _codeBodyCache;
 
-        public CsUsingContent(string @namespace, bool isGlobal = false)
+        public CsUsingDirectiveContent(CsNamespace @namespace, bool isGlobal = false)
         {
             CanOperateContents = false;
             Namespace = @namespace;

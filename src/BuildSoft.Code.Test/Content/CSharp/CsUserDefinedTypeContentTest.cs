@@ -17,7 +17,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
         }
 
-        public CsUserDefinedTypeContentTest(string identifier, IReadOnlyCollection<string>? modifiers = null, string? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
+        public CsUserDefinedTypeContentTest(string identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
             : base(identifier, modifiers, subClass, baseInterfaces)
         {
         }

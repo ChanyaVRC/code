@@ -8,12 +8,12 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsNamespaceContent : CsContent, IAvailable<CsNamespaceContent>
     {
-        public CsNamespaceContent(string @namespace)
+        public CsNamespaceContent(CsNamespace @namespace)
         {
             Namespace = @namespace;
         }
 
-        public string Namespace { get; }
+        public CsNamespace Namespace { get; }
 
         public void AddContent(CsNamespaceContent content)
             => AddableContents.Add(content);

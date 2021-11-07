@@ -17,7 +17,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
 
         }
-        public CsMemberContentTest(string identifier, string type, IEnumerable<string>? modifiers = null)
+        public CsMemberContentTest(string identifier, CsType type, IEnumerable<string>? modifiers = null)
             : base(identifier, type, modifiers)
         {
         }
@@ -29,7 +29,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsMemberContentTest content = new("Test", "Type");
             Assert.AreEqual("Test", content.Identifier.Value);
-            Assert.AreEqual("Type", content.Type);
+            Assert.AreEqual("Type", content.Type.Value);
             Assert.AreEqual("Type Test", content.Header);
             Assert.AreEqual(0, content.Modifiers.Count);
             Assert.IsTrue(content.IsImmutableHeader);

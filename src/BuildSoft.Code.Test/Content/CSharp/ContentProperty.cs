@@ -11,7 +11,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             new CsTopLevelContent(),
             new CsNamespaceContent("Test"),
-            new CsUsingContent("System"),
+            new CsUsingDirectiveContent("System"),
             new CsLineContent(),
         };
 

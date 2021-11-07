@@ -43,7 +43,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void AddUsingContentTest()
         {
             CsTopLevelContent content = new();
-            CsUsingContent usingContent = new("System");
+            CsUsingDirectiveContent usingContent = new("System");
 
             Assert.AreEqual(0, content.Contents.Count);
 
@@ -78,8 +78,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void RemoveUsingContentTest()
         {
             CsTopLevelContent testTarget = new();
-            CsUsingContent namespaceContent1 = new("System");
-            CsUsingContent namespaceContent2 = new("System.Collections.Generic");
+            CsUsingDirectiveContent namespaceContent1 = new("System");
+            CsUsingDirectiveContent namespaceContent2 = new("System.Collections.Generic");
 
             testTarget.AddContent(namespaceContent1);
             testTarget.AddContent(namespaceContent2);
