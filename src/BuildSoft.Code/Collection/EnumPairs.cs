@@ -105,7 +105,7 @@ namespace BuildSoft.Code.Collection
                     {
                         return names[0];
                     }
-                    return "";
+                    return string.Empty;
                 }
             }
 
@@ -161,7 +161,7 @@ namespace BuildSoft.Code.Collection
             // a string for the integral value.
             if (resultValue != 0)
             {
-                return "";
+                return string.Empty;
             }
 
             // We know what strings to concatenate.  Do so.

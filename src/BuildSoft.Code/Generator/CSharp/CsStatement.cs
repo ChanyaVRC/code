@@ -48,7 +48,7 @@ namespace BuildSoft.Code.Generator.CSharp
 
         public void WriteEmptyLine()
         {
-            Writer.AppendLine("", false);
+            Writer.AppendLine(string.Empty, false);
         }
         public void WriteLineDynamic(string content, bool appendIndent = true)
         {

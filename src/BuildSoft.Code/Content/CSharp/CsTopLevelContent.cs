@@ -9,7 +9,7 @@ namespace BuildSoft.Code.Content.CSharp
     public class CsTopLevelContent 
         : CsContent, IAvailable<CsNamespaceContent>, IAvailable<CsUsingDirectiveContent>
     {
-        private static readonly Code _code = Code.CreateCodeWithContents("", 0, false);
+        private static readonly Code _code = Code.CreateCodeWithContents(string.Empty, 0, false);
  
         public CsTopLevelContent()
         {

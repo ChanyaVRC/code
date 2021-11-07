@@ -8,7 +8,7 @@ namespace BuildSoft.Code.Content
 {
     public record class Code
     {
-        public static readonly Code Empty = new("", 0, false, false); 
+        public static readonly Code Empty = new(string.Empty, 0, false, false); 
 
         public string Body { get; internal init; }
         public int ContentsStartIndex { get; internal init; }
