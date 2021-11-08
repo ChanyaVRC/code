@@ -9,7 +9,7 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsClassContent : CsUserDefinedTypeContent
     {
-        public CsClassContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
+        public CsClassContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
             : base(identifier, modifiers, subClass, baseInterfaces)
         {
             

@@ -17,7 +17,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
         }
 
-        public CsUserDefinedTypeContentTest(string identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
+        public CsUserDefinedTypeContentTest(string identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
             : base(identifier, modifiers, subClass, baseInterfaces)
         {
         }
@@ -26,7 +26,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         #endregion
 
         private static readonly string[] _modifiers = new[] { "public", "partial" };
-        private static readonly string[] _interfaces = new[] { "I1", "I2" };
+        private static readonly CsType[] _interfaces = new CsType[] { "I1", "I2" };
 
         [TestMethod()]
         public void ToCodeIndentTest()

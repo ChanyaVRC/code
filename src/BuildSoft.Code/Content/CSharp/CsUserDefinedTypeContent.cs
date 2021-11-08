@@ -13,10 +13,10 @@ namespace BuildSoft.Code.Content.CSharp
         public CsIdentifier Identifier { get; }
         public IReadOnlyCollection<string> Modifiers => _modifiers ??= new List<string>();
         private List<string>? _modifiers;
-        
+
         public CsType? SubClass { get; }
-        public IReadOnlyCollection<string> SubInterfaces => _interfaces ??= new List<string>();
-        private List<string>? _interfaces; 
+        public IReadOnlyCollection<CsType> SubInterfaces => _interfaces ??= new List<CsType>();
+        private List<CsType>? _interfaces;
 
         public string Header => !IsImmutableHeader || _header == null ? _header = CreateHeader() : _header;
         private string? _header;
@@ -38,7 +38,7 @@ namespace BuildSoft.Code.Content.CSharp
                 }
                 if (_interfaces != null && _interfaces.Count > 0)
                 {
-                    bases = bases.Concat(_interfaces);
+                    bases = bases.Concat(_interfaces.Select(x => x.GetOptimizedName()));
                 }
                 values = values.Append(":").Append(string.Join(", ", bases.Select(x => x.Trim())));
             }
@@ -46,7 +46,7 @@ namespace BuildSoft.Code.Content.CSharp
             return string.Join(' ', values.Select(x => x.Trim()));
         }
 
-        protected CsUserDefinedTypeContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<string>? baseInterfaces = null)
+        protected CsUserDefinedTypeContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
         {
             Identifier = identifier;
             if (modifiers != null)
