@@ -31,16 +31,16 @@ namespace BuildSoft.Code.Content.CSharp
 
             if (SubClass != null || (_interfaces != null && _interfaces.Count > 0))
             {
-                IEnumerable<string> bases = Enumerable.Empty<string>();
+                IEnumerable<CsType> bases = Enumerable.Empty<CsType>();
                 if (SubClass != null)
                 {
-                    bases = bases.Append(SubClass.GetOptimizedName());
+                    bases = bases.Append(SubClass);
                 }
                 if (_interfaces != null && _interfaces.Count > 0)
                 {
-                    bases = bases.Concat(_interfaces.Select(x => x.GetOptimizedName()));
+                    bases = bases.Concat(_interfaces);
                 }
-                values = values.Append(":").Append(string.Join(", ", bases.Select(x => x.Trim())));
+                values = values.Append(":").Append(string.Join(", ", bases.Select(x => x.GetOptimizedName())));
             }
 
             return string.Join(' ', values.Select(x => x.Trim()));
