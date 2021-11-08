@@ -14,9 +14,9 @@
         {
             if (string.IsNullOrEmpty(Modifier))
             {
-                return Type + ' ' + Identifier;
+                return Type.FullName + ' ' + Identifier;
             }
-            return Modifier + ' ' + Type + ' ' + Identifier;
+            return Modifier + ' ' + Type.FullName + ' ' + Identifier;
         }
     }
 }

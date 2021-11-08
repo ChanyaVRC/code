@@ -9,40 +9,10 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public /*record*/ class CsNamespace : IEquatable<CsNamespace>
     {
-        public static readonly CsNamespace Global = new((string?)null);
+        public static readonly CsNamespace Global = new(null);
 
         public ImmutableArray<CsIdentifier> Domain { get; }
         public string? Value { get; }
-
-        public CsNamespace(CsNamespace parent, string child)
-            : this(parent, new CsNamespace(child))
-        {
-
-        }
-        public CsNamespace(CsNamespace parent, CsNamespace child)
-        {
-            if (child.Value == null)
-            {
-                (Domain, Value) = (parent.Domain, parent.Value);
-            }
-            else if (parent.Value == null)
-            {
-                (Domain, Value) = (child.Domain, child.Value);
-            }
-            else
-            {
-                Domain = parent.Domain.AddRange(child.Domain);
-                Value = parent.Value + '.' + child.Value;
-            }
-        }
-
-        public CsNamespace(CsNamespace parent, CsIdentifier identifier)
-        {
-            Domain = parent.Domain.Add(identifier);
-
-            string? value = parent.Value;
-            Value = value == null ? identifier.Value : value + '.' + identifier.Value;
-        }
 
         public CsNamespace(CsIdentifier identifier)
         {
@@ -61,6 +31,37 @@ namespace BuildSoft.Code.Content.CSharp
             {
                 Domain = value.Split('.').Select(x => new CsIdentifier(x)).ToImmutableArray();
                 Value = value;
+            }
+        }
+
+        public CsNamespace(CsNamespace parent, CsIdentifier identifier)
+        {
+            Domain = parent.Domain.Add(identifier);
+
+            string? value = parent.Value;
+            Value = value == null ? identifier.Value : value + '.' + identifier.Value;
+        }
+
+        public CsNamespace(CsNamespace parent, string child)
+            : this(parent, new CsNamespace(child))
+        {
+
+        }
+        
+        public CsNamespace(CsNamespace parent, CsNamespace child)
+        {
+            if (child.Value == null)
+            {
+                (Domain, Value) = (parent.Domain, parent.Value);
+            }
+            else if (parent.Value == null)
+            {
+                (Domain, Value) = (child.Domain, child.Value);
+            }
+            else
+            {
+                Domain = parent.Domain.AddRange(child.Domain);
+                Value = parent.Value + '.' + child.Value;
             }
         }
 
