@@ -33,7 +33,6 @@ namespace BuildSoft.Code.Content.CSharp
 
         public override string ToString() => Value;
 
-        public static implicit operator string(CsIdentifier value) => value.Value;
         public static implicit operator CsIdentifier(string value) => new(value);
     }
 }

@@ -89,7 +89,6 @@ namespace BuildSoft.Code.Content.CSharp
             return Value == obj.Value;
         }
 
-        public static implicit operator string?(CsNamespace value) => value.Value;
         public static implicit operator CsNamespace(string value) => new(value);
 
         public static bool operator ==(CsNamespace? left, CsNamespace? right)
