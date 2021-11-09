@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
 {
-    public class CsNamespaceContent : CsContent, IAvailable<CsNamespaceContent>
+    public class CsNamespaceContent : CsContent, IAvailable<CsNamespaceContent>, IAvailable<CsUserDefinedTypeContent>
     {
         public CsNamespaceContent(CsNamespace @namespace)
         {
