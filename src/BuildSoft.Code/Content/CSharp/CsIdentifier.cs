@@ -16,16 +16,16 @@ namespace BuildSoft.Code.Content.CSharp
             {
                 throw new ArgumentException("Identifier must be at least one character.", nameof(value));
             }
-            if (!char.IsLetter(value[0]))
+
+            if (char.IsDigit(value[0]))
             {
                 throw new ArgumentException($"'{value[0]}' cannot be used at the beginning of the identifier.", nameof(value));
             }
-
-            for (int i = 1; i < value.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (!char.IsLetterOrDigit(value[i]))
                 {
-                    throw new ArgumentException($"'{value[0]}' cannot be used at an identifier.", nameof(value));
+                    throw new ArgumentException($"'{value[i]}' cannot be used at an identifier.", nameof(value));
                 }
             }
             Value = value;
