@@ -106,6 +106,7 @@ namespace BuildSoft.Code.Content.CSharp
         public override string ToString() => FullName;
 
         public static implicit operator CsType(string value) => new(value);
+        public static implicit operator CsType(Type value) => new(value);
     }
 
 }
