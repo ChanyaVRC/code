@@ -21,8 +21,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
             argument = new(new(typeof(int)), new("value"), "in");
             Assert.AreEqual("in int value", argument.ToOptimizedString());
         
-            argument = new(new(typeof(IntPtr)), new("value"), "in");
-            Assert.AreEqual("in System.IntPtr value", argument.ToOptimizedString());
+            argument = new(new(typeof(Uri)), new("value"), "in");
+            Assert.AreEqual("in System.Uri value", argument.ToOptimizedString());
         }
 
         [TestMethod()]
@@ -34,8 +34,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
             argument = new(new(typeof(int)), new("value"), "in");
             Assert.AreEqual("in int value", argument.ToString());
 
-            argument = new(new(typeof(IntPtr)), new("value"), "in");
-            Assert.AreEqual("in System.IntPtr value", argument.ToString());
+            argument = new(new(typeof(Uri)), new("value"), "in");
+            Assert.AreEqual("in System.Uri value", argument.ToString());
         }
     }
 }

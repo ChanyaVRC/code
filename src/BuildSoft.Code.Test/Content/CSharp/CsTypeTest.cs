@@ -73,15 +73,34 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod()]
         public void GetOptimizedNameTest()
         {
-            CsType type = new(typeof(int));
-            Assert.AreEqual("int", type.GetOptimizedName());
+            Assert.AreEqual("sbyte", new CsType(typeof(sbyte)).GetOptimizedName());
+            Assert.AreEqual("byte", new CsType(typeof(byte)).GetOptimizedName());
+            Assert.AreEqual("short", new CsType(typeof(short)).GetOptimizedName());
+            Assert.AreEqual("ushort", new CsType(typeof(ushort)).GetOptimizedName());
+            Assert.AreEqual("int", new CsType(typeof(int)).GetOptimizedName());
+            Assert.AreEqual("uint", new CsType(typeof(uint)).GetOptimizedName());
+            Assert.AreEqual("nuint", new CsType(typeof(nuint)).GetOptimizedName());
+            Assert.AreEqual("nint", new CsType(typeof(nint)).GetOptimizedName());
+            Assert.AreEqual("long", new CsType(typeof(long)).GetOptimizedName());
+            Assert.AreEqual("ulong", new CsType(typeof(ulong)).GetOptimizedName());
+            Assert.AreEqual("float", new CsType(typeof(float)).GetOptimizedName());
+            Assert.AreEqual("double", new CsType(typeof(double)).GetOptimizedName());
+            Assert.AreEqual("decimal", new CsType(typeof(decimal)).GetOptimizedName());
+            Assert.AreEqual("char", new CsType(typeof(char)).GetOptimizedName());
+            Assert.AreEqual("bool", new CsType(typeof(bool)).GetOptimizedName());
+            Assert.AreEqual("object", new CsType(typeof(object)).GetOptimizedName());
+            Assert.AreEqual("string", new CsType(typeof(string)).GetOptimizedName());
+            Assert.AreEqual("void", new CsType(typeof(void)).GetOptimizedName());
+            Assert.AreEqual(typeof(Math).FullName, new CsType(typeof(Math)).GetOptimizedName());
+            Assert.AreEqual(typeof(List<int>).FullName, new CsType(typeof(List<int>)).ToString());
         }
 
         [TestMethod()]
         public void ToStringTest()
         {
-            CsType type = new(typeof(int));
-            Assert.AreEqual(type.FullName, type.ToString());
+            Assert.AreEqual(typeof(int).FullName, new CsType(typeof(int)).ToString());
+            Assert.AreEqual(typeof(Math).FullName, new CsType(typeof(Math)).ToString());
+            Assert.AreEqual(typeof(List<int>).FullName, new CsType(typeof(List<int>)).ToString());
         }
     }
 }
