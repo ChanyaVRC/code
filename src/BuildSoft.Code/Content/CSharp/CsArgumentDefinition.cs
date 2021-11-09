@@ -5,7 +5,7 @@
         public string ToOptimizedString()
         {
             string result = Type.GetOptimizedName() + ' ' + Identifier;
-            if (string.IsNullOrEmpty(Modifier))
+            if (!string.IsNullOrEmpty(Modifier))
             {
                 result = Modifier + ' ' + result;
             }
