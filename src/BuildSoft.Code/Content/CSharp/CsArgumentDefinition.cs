@@ -4,19 +4,22 @@
     {
         public string ToOptimizedString()
         {
+            string result = Type.GetOptimizedName() + ' ' + Identifier;
             if (string.IsNullOrEmpty(Modifier))
             {
-                return Type.GetOptimizedName() + ' ' + Identifier;
+                result = Modifier + ' ' + result;
             }
-            return Modifier + ' ' + Type.GetOptimizedName() + ' ' + Identifier;
+            return result;
         }
+
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(Modifier))
+            string result = Type.FullName + ' ' + Identifier;
+            if (!string.IsNullOrEmpty(Modifier))
             {
-                return Type.FullName + ' ' + Identifier;
+                result = Modifier + ' ' + result;
             }
-            return Modifier + ' ' + Type.FullName + ' ' + Identifier;
+            return result;
         }
     }
 }
