@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.Content.CSharp
 {
     // TODO: Correspond to Generics
-    // TODO: Add Test
     public record class CsType
     {
         public CsNamespace Namespace { get; }
@@ -40,11 +39,15 @@ namespace BuildSoft.Code.Content.CSharp
             "System.Int64" => "long",
             "System.UInt64" => "ulong",
             "System.Decimal" => "decimal",
-            "System.String" => "string",
             "System.Single" => "float",
             "System.Double" => "double",
             "System.Char" => "char",
             "System.Boolean" => "bool",
+            "System.IntPtr" => "nint",
+            "System.UIntPtr" => "nuint",
+            "System.String" => "string",
+            "System.Object" => "object",
+            "System.Void" => "void",
             _ => FullName
         };
 
