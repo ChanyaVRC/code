@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace BuildSoft.Code.Content.CSharp
 {
     // TODO: Correspond to Generics
+    // TODO: Add Test
     public record class CsType
     {
         public CsNamespace Namespace { get; }
@@ -28,7 +29,24 @@ namespace BuildSoft.Code.Content.CSharp
         }
 
         // TODO: Return the best name based on using directive.
-        public string GetOptimizedName() => FullName;
+        public string GetOptimizedName() => FullName switch
+        {
+            "System.SByte" => "sbyte",
+            "System.Byte" => "byte",
+            "System.Int16" => "short",
+            "System.UInt16" => "ushort",
+            "System.Int32" => "int",
+            "System.UInt32" => "uint",
+            "System.Int64" => "long",
+            "System.UInt64" => "ulong",
+            "System.Decimal" => "decimal",
+            "System.String" => "string",
+            "System.Single" => "float",
+            "System.Double" => "double",
+            "System.Char" => "char",
+            "System.Boolean" => "bool",
+            _ => FullName
+        };
 
         public CsType(Type type)
             : this(type.FullName ?? type.Name, type.IsGenericType)

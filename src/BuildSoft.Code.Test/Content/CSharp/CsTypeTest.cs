@@ -74,7 +74,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void GetOptimizedNameTest()
         {
             CsType type = new(typeof(int));
-            Assert.AreEqual(type.FullName, type.GetOptimizedName());
+            Assert.AreEqual("int", type.GetOptimizedName());
         }
 
         [TestMethod()]

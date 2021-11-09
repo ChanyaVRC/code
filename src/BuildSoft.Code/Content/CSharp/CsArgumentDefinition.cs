@@ -14,7 +14,7 @@
 
         public override string ToString()
         {
-            string result = Type.FullName + ' ' + Identifier;
+            string result = Type.GetOptimizedName() + ' ' + Identifier;
             if (!string.IsNullOrEmpty(Modifier))
             {
                 result = Modifier + ' ' + result;
