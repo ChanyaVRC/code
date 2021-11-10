@@ -10,7 +10,7 @@ namespace BuildSoft.Code.Content.CSharp
         : CsContent, IAvailable<CsUserDefinedTypeContent>, IAvailable<CsMemberContent>, IModifiable
     {
         public abstract string Keyword { get; }
-        public CsIdentifier Identifier { get; }
+        public CsTypeName Name { get; }
         public IReadOnlyCollection<string> Modifiers => _modifiers ??= new List<string>();
         private List<string>? _modifiers;
 
@@ -27,7 +27,7 @@ namespace BuildSoft.Code.Content.CSharp
         protected virtual string CreateHeader()
         {
             IEnumerable<string> values = (_modifiers ?? Enumerable.Empty<string>())
-                .Append(Keyword).Append(Identifier.Value);
+                .Append(Keyword).Append(Name.Value);
 
             if (SubClass != null || (_interfaces != null && _interfaces.Count > 0))
             {
@@ -46,9 +46,9 @@ namespace BuildSoft.Code.Content.CSharp
             return string.Join(' ', values.Select(x => x.Trim()));
         }
 
-        protected CsUserDefinedTypeContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
+        protected CsUserDefinedTypeContent(CsTypeName name, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
         {
-            Identifier = identifier;
+            Name = name;
             if (modifiers != null)
             {
                 _modifiers = new(modifiers);

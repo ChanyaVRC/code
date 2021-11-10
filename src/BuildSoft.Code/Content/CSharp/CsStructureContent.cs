@@ -8,8 +8,8 @@ namespace BuildSoft.Code.Content.CSharp
 {
     public class CsStructureContent : CsUserDefinedTypeContent
     {
-        public CsStructureContent(CsIdentifier identifier, IReadOnlyCollection<string>? modifiers = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
-            : base(identifier, modifiers, baseInterfaces: baseInterfaces)
+        public CsStructureContent(CsTypeName name, IReadOnlyCollection<string>? modifiers = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
+            : base(name, modifiers, baseInterfaces: baseInterfaces)
         {
         }
 

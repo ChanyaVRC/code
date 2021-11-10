@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp
@@ -11,8 +13,9 @@ namespace BuildSoft.Code.Content.CSharp
     public record class CsType
     {
         public CsNamespace Namespace { get; }
-        public CsIdentifier Name { get; }
+        public CsTypeName Name { get; }
         public bool IsGeneric { get; }
+        public bool IsArray { get; }
         public string Value => Name.Value;
         public string FullName
         {
@@ -56,13 +59,13 @@ namespace BuildSoft.Code.Content.CSharp
         {
         }
 
-        public CsType(CsNamespace @namespace, CsIdentifier identifier)
+        public CsType(CsNamespace @namespace, CsTypeName name)
         {
             Namespace = @namespace;
-            Name = identifier;
+            Name = name;
         }
 
-        public CsType(CsIdentifier identifier, bool isGeneric = false)
+        public CsType(CsTypeName identifier, bool isGeneric = false)
         {
             IsGeneric = isGeneric;
             Namespace = CsNamespace.Global;
@@ -73,33 +76,33 @@ namespace BuildSoft.Code.Content.CSharp
         {
             IsGeneric = isGeneric;
 
-            if (isGeneric)
+            if (fullName.StartsWith("global::"))
+            {
+                fullName = fullName["global::".Length..];
+            }
+
+            int index = fullName.IndexOf("[[");
+            string name = fullName;
+            if (index >= 0&& fullName.EndsWith("]]"))
+            {
+                name = fullName[..index];
+            }
+
+            int lastIndex = name.LastIndexOf('.');
+            if (lastIndex == 0)
+            {
+                ThrowHelper.ThrowArgumentException(null, ParamName.fullName);
+            }
+
+            if (lastIndex < 0)
             {
                 Namespace = CsNamespace.Global;
-                Name = new CsIdentifier(fullName);
+                Name = new CsTypeName(fullName);
             }
             else
             {
-                if (fullName.StartsWith("global::"))
-                {
-                    fullName = fullName["global::".Length..];
-                }
-                int lastIndex = fullName.LastIndexOf('.');
-                if (lastIndex == 0)
-                {
-                    ThrowHelper.ThrowArgumentException(null, ParamName.fullName);
-                }
-
-                if (lastIndex < 0)
-                {
-                    Namespace = CsNamespace.Global;
-                    Name = new CsIdentifier(fullName);
-                }
-                else
-                {
-                    Namespace = new CsNamespace(fullName[..lastIndex]);
-                    Name = new CsIdentifier(fullName[(lastIndex + 1)..]);
-                }
+                Namespace = new CsNamespace(fullName[..lastIndex]);
+                Name = new CsTypeName(fullName[(lastIndex + 1)..]);
             }
         }
 
@@ -108,5 +111,4 @@ namespace BuildSoft.Code.Content.CSharp
         public static implicit operator CsType(string value) => new(value);
         public static implicit operator CsType(Type value) => new(value);
     }
-
 }

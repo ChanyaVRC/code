@@ -17,7 +17,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsType type = new(typeof(int));
             Assert.AreEqual(new CsNamespace(typeof(int).Namespace), type.Namespace);
-            Assert.AreEqual(new CsIdentifier(typeof(int).Name), type.Name);
+            Assert.AreEqual(new CsTypeName(typeof(int).Name), type.Name);
             Assert.AreEqual(typeof(int).Name, type.Value);
             Assert.AreEqual(typeof(int).FullName, type.FullName);
             Assert.IsFalse(type.IsGeneric);
@@ -26,9 +26,9 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod()]
         public void ConstructorTest2()
         {
-            CsType type = new(new CsNamespace(typeof(int).Namespace), new CsIdentifier(typeof(int).Name));
+            CsType type = new(new CsNamespace(typeof(int).Namespace), new CsTypeName(typeof(int).Name));
             Assert.AreEqual(new CsNamespace(typeof(int).Namespace), type.Namespace);
-            Assert.AreEqual(new CsIdentifier(typeof(int).Name), type.Name);
+            Assert.AreEqual(new CsTypeName(typeof(int).Name), type.Name);
             Assert.AreEqual(typeof(int).Name, type.Value);
             Assert.AreEqual(typeof(int).FullName, type.FullName);
             Assert.IsFalse(type.IsGeneric);
@@ -37,9 +37,9 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod()]
         public void ConstructorTest3()
         {
-            CsType type = new(new CsIdentifier("Type"));
+            CsType type = new(new CsTypeName("Type"));
             Assert.AreEqual(CsNamespace.Global, type.Namespace);
-            Assert.AreEqual(new CsIdentifier("Type"), type.Name);
+            Assert.AreEqual(new CsTypeName("Type"), type.Name);
             Assert.AreEqual("Type", type.Value);
             Assert.AreEqual("Type", type.FullName);
             Assert.IsFalse(type.IsGeneric);
@@ -50,23 +50,31 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             CsType type = new("Type");
             Assert.AreEqual(CsNamespace.Global, type.Namespace);
-            Assert.AreEqual(new CsIdentifier("Type"), type.Name);
+            Assert.AreEqual(new CsTypeName("Type"), type.Name);
             Assert.AreEqual("Type", type.Value);
             Assert.AreEqual("Type", type.FullName);
             Assert.IsFalse(type.IsGeneric);
 
             type = new("global::Type");
             Assert.AreEqual(CsNamespace.Global, type.Namespace);
-            Assert.AreEqual(new CsIdentifier("Type"), type.Name);
+            Assert.AreEqual(new CsTypeName("Type"), type.Name);
             Assert.AreEqual("Type", type.Value);
             Assert.AreEqual("Type", type.FullName);
             Assert.IsFalse(type.IsGeneric);
 
             type = new("System.Type");
             Assert.AreEqual(new CsNamespace("System"), type.Namespace);
-            Assert.AreEqual(new CsIdentifier("Type"), type.Name);
+            Assert.AreEqual(new CsTypeName("Type"), type.Name);
             Assert.AreEqual("Type", type.Value);
             Assert.AreEqual("System.Type", type.FullName);
+            Assert.IsFalse(type.IsGeneric);
+
+            string expectedName = "Dictionary<string, System.Collections.Generic.List<string>>";
+            type = new(typeof(Dictionary<string, List<string>>).FullName!);
+            Assert.AreEqual(typeof(Dictionary<string, List<string>>).Namespace, type.Namespace.Value);
+            Assert.AreEqual(new CsTypeName(expectedName), type.Name);
+            Assert.AreEqual(expectedName, type.Value);
+            Assert.AreEqual(typeof(Dictionary<string, List<string>>).Namespace + "." + expectedName, type.FullName);
             Assert.IsFalse(type.IsGeneric);
         }
 
@@ -91,8 +99,25 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual("object", new CsType(typeof(object)).GetOptimizedName());
             Assert.AreEqual("string", new CsType(typeof(string)).GetOptimizedName());
             Assert.AreEqual("void", new CsType(typeof(void)).GetOptimizedName());
-            Assert.AreEqual(typeof(Math).FullName, new CsType(typeof(Math)).GetOptimizedName());
-            Assert.AreEqual(typeof(List<int>).FullName, new CsType(typeof(List<int>)).ToString());
+            Assert.AreEqual("System.Math", new CsType(typeof(Math)).GetOptimizedName());
+        }
+
+        [WorkItem(3)]
+        [TestMethod()]
+        public void GetOptimizedNameGenericsTest()
+        {
+            Assert.AreEqual("System.Collections.Generic.List<int>", new CsType(typeof(List<int>)).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<int, string>>", new CsType(typeof(List<Dictionary<int, string>>)).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<int>, System.Collections.Generic.Dictionary<int, string>>"
+                , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)).GetOptimizedName());
+        }
+
+        [WorkItem(3)]
+        [TestMethod()]
+        public void GetOptimizedNameArrayTest()
+        {
+            Assert.AreEqual("int[]", new CsType(typeof(int[])).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(int[])).GetOptimizedName());
         }
 
         [TestMethod()]
@@ -100,7 +125,28 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             Assert.AreEqual(typeof(int).FullName, new CsType(typeof(int)).ToString());
             Assert.AreEqual(typeof(Math).FullName, new CsType(typeof(Math)).ToString());
-            Assert.AreEqual(typeof(List<int>).FullName, new CsType(typeof(List<int>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<int>", new CsType(typeof(List<int>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<int, string>>", new CsType(typeof(List<Dictionary<int, string>>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<int>, System.Collections.Generic.Dictionary<int, string>>"
+                , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)).ToString());
+        }
+
+        [WorkItem(3)]
+        [TestMethod()]
+        public void ToStringGenericsTest()
+        {
+            Assert.AreEqual("System.Collections.Generic.List<int>", new CsType(typeof(List<int>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<int, string>>", new CsType(typeof(List<Dictionary<int, string>>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<int>, System.Collections.Generic.Dictionary<int, string>>"
+                , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)).ToString());
+        }
+
+        [WorkItem(3)]
+        [TestMethod()]
+        public void ToStringArrayTest()
+        {
+            Assert.AreEqual("int[]", new CsType(typeof(int[])).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(int[])).ToString());
         }
     }
 }
