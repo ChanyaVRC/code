@@ -122,6 +122,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual("int[]", new CsType(typeof(int[])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.List<int[][,,]>[,]", new CsType(typeof(List<int[][,,]>[,])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int[][]>[]", new CsType(typeof(List<int[][]>[])).GetOptimizedName());
         }
 
