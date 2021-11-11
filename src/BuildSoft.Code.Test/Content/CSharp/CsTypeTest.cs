@@ -69,7 +69,7 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual("System.Type", type.FullName);
             Assert.IsFalse(type.IsGeneric);
 
-            string expectedName = "Dictionary<string, System.Collections.Generic.List<string>>";
+            string expectedName = "Dictionary<System.String, System.Collections.Generic.List<System.String>>";
             type = new(typeof(Dictionary<string, List<string>>).FullName!);
             Assert.AreEqual(typeof(Dictionary<string, List<string>>).Namespace, type.Namespace.Value);
             Assert.AreEqual(new CsTypeName(expectedName), type.Name);
