@@ -125,19 +125,15 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             Assert.AreEqual(typeof(int).FullName, new CsType(typeof(int)).ToString());
             Assert.AreEqual(typeof(Math).FullName, new CsType(typeof(Math)).ToString());
-            Assert.AreEqual("System.Collections.Generic.List<int>", new CsType(typeof(List<int>)).ToString());
-            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<int, string>>", new CsType(typeof(List<Dictionary<int, string>>)).ToString());
-            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<int>, System.Collections.Generic.Dictionary<int, string>>"
-                , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)).ToString());
         }
 
         [WorkItem(3)]
         [TestMethod()]
         public void ToStringGenericsTest()
         {
-            Assert.AreEqual("System.Collections.Generic.List<int>", new CsType(typeof(List<int>)).ToString());
-            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<int, string>>", new CsType(typeof(List<Dictionary<int, string>>)).ToString());
-            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<int>, System.Collections.Generic.Dictionary<int, string>>"
+            Assert.AreEqual("System.Collections.Generic.List<System.Int32>", new CsType(typeof(List<int>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.Int32, System.String>>", new CsType(typeof(List<Dictionary<int, string>>)).ToString());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<System.Int32>, System.Collections.Generic.Dictionary<System.Int32, System.String>>"
                 , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)).ToString());
         }
 
@@ -145,8 +141,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
         [TestMethod()]
         public void ToStringArrayTest()
         {
-            Assert.AreEqual("int[]", new CsType(typeof(int[])).ToString());
-            Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).ToString());
+            Assert.AreEqual("System.Int32[]", new CsType(typeof(int[])).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<System.Int32>[]", new CsType(typeof(List<int>[])).ToString());
         }
     }
 }
