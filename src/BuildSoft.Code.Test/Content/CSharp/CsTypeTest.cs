@@ -121,6 +121,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
         {
             Assert.AreEqual("int[]", new CsType(typeof(int[])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.List<int[][]>[]", new CsType(typeof(List<int[][]>[])).GetOptimizedName());
         }
 
         [TestMethod()]
@@ -147,7 +149,9 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void ToStringArrayTest()
         {
             Assert.AreEqual("System.Int32[]", new CsType(typeof(int[])).ToString());
+            Assert.AreEqual("System.Int32[][]", new CsType(typeof(int[][])).ToString());
             Assert.AreEqual("System.Collections.Generic.List<System.Int32>[]", new CsType(typeof(List<int>[])).ToString());
+            Assert.AreEqual("System.Collections.Generic.List<System.Int32[][]>[]", new CsType(typeof(List<int[][]>[])).ToString());
         }
     }
 }
