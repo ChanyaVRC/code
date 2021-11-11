@@ -30,32 +30,45 @@ namespace BuildSoft.Code.Content.CSharp
             }
         }
 
-        // TODO: Return the best name based on using directive.
-        public string GetOptimizedName() => FullName switch
+        public string BaseType
         {
-            "System.SByte" => "sbyte",
-            "System.Byte" => "byte",
-            "System.Int16" => "short",
-            "System.UInt16" => "ushort",
-            "System.Int32" => "int",
-            "System.UInt32" => "uint",
-            "System.Int64" => "long",
-            "System.UInt64" => "ulong",
-            "System.Decimal" => "decimal",
-            "System.Single" => "float",
-            "System.Double" => "double",
-            "System.Char" => "char",
-            "System.Boolean" => "bool",
-            "System.IntPtr" => "nint",
-            "System.UIntPtr" => "nuint",
-            "System.String" => "string",
-            "System.Object" => "object",
-            "System.Void" => "void",
-            _ => FullName
-        };
+            get
+            {
+                string? namespaceString = Namespace.Value;
+                if (namespaceString == null)
+                {
+                    return Name.Base;
+                }
+                return namespaceString + "." + Name.Base;
+            }
+        }   
+        private string OptimizedBaseType
+        {
+            get
+            {
+                string? namespaceString = Namespace.Value;
+                if (namespaceString == null)
+                {
+                    return Name.OptimizedBase;
+                }
+                return namespaceString + "." + Name.OptimizedBase;
+            }
+        }
+
+        // TODO: Return the best name based on using directive.
+        public string GetOptimizedName() => Name.Concat(GetOptimizedBaseTypeName());
+        public string GetOptimizedBaseTypeName()
+        {
+            string baseType = OptimizedBaseType;
+            if (baseType.IsFullNameOfKeywordType())
+            {
+                return baseType.ToKeywordType();
+            }
+            return baseType;
+        }
 
         public CsType(Type type)
-            : this(type.FullName ?? type.Name, type.IsGenericType)
+            : this(type.FullName ?? type.Name)
         {
         }
 
@@ -65,28 +78,43 @@ namespace BuildSoft.Code.Content.CSharp
             Name = name;
         }
 
-        public CsType(CsTypeName identifier, bool isGeneric = false)
+        public CsType(CsTypeName identifier)
         {
-            IsGeneric = isGeneric;
             Namespace = CsNamespace.Global;
             Name = identifier;
         }
 
-        public CsType(string fullName, bool isGeneric = false)
+        internal CsType(ReadOnlySpan<char> fullName) : this(fullName.ToString())
         {
-            IsGeneric = isGeneric;
+
+        }
+        public CsType(string fullName)
+        {
+            if (fullName.IsKeywordType())
+            {
+                fullName = fullName.ToFullname();
+            }
 
             if (fullName.StartsWith("global::"))
             {
                 fullName = fullName["global::".Length..];
             }
 
-            int index = fullName.IndexOf("[[");
             string name = fullName;
-            if (index >= 0&& fullName.EndsWith("]]"))
+            int index = name.IndexOf("[[");
+            if (index >= 0)
             {
                 name = fullName[..index];
             }
+            else
+            {
+                index = name.IndexOf("<");
+                if (index >= 0)
+                {
+                    name = fullName[..index];
+                }
+            }
+
 
             int lastIndex = name.LastIndexOf('.');
             if (lastIndex == 0)

@@ -1,88 +1,109 @@
 ﻿namespace BuildSoft.Code.Content.CSharp
 {
+
     public /*record*/ class CsTypeName
     {
-        private readonly CsIdentifier _baseType;
+        public CsType? BaseType { get; }
+        public CsIdentifier? BaseName { get; }
+
+        public string Base => BaseType?.Value ?? BaseName!.Value;
+        public string OptimizedBase => BaseType?.GetOptimizedName() ?? BaseName!.Value;
+
         public string Value
         {
             get
             {
-                string result = _baseType.Value;
-                var genericTypes = GenericTypes;
-                if (genericTypes != null)
-                {
-                    result += "<" + string.Join(", ", genericTypes.Select(x => x.GetOptimizedName())) + ">";
-                }
-                if (IsArray)
-                {
-                    result += $"[{new string(',', Rank - 1)}]";
-                }
-                return result;
+                return Concat(Base, false);
             }
         }
-        public bool IsArray { get; }
+
+        public string OptimizedValue
+        {
+            get
+            {
+                return Concat(Base);
+            }
+        }
+
+        internal string Concat(string value, bool isOptimized = true) => _type switch
+        {
+            TypeType.Pointer => value + '*',
+            TypeType.Ref => "ref " + value,
+            TypeType.Array => $"{value}[{new string(',', Rank - 1)}]",
+            TypeType.Generic => $"{value}<{string.Join(", ", GenericTypes!.Select(x => isOptimized ? x.GetOptimizedName() : x.FullName))}>",
+            _ => value,
+        };
         public int Rank { get; }
         public CsType[]? GenericTypes { get; }
-        public bool IsGenericType { get; }
-        public bool IsRef { get;  }
-        public CsTypeName? ParentType { get; }
+        public CsType? ParentType { get; }
 
-        public CsTypeName(string value)
+        public bool IsArray => _type == TypeType.Array;
+        public bool IsGenericType => _type == TypeType.Generic;
+        public bool IsRef => _type == TypeType.Ref;
+        public bool IsPointer => _type == TypeType.Pointer;
+
+        private readonly TypeType _type;
+        enum TypeType
+        {
+            Nomal, Ref, Pointer, Array, Generic,
+        }
+
+        public CsTypeName(string value) : this(value.AsSpan())
+        {
+
+        }
+
+        public CsTypeName(ReadOnlySpan<char> value)
         {
             if (value.Length <= 0)
             {
                 throw new ArgumentException("Identifier must be at least one character.", nameof(value));
             }
 
-            string baseTypeString = value;
-            if (baseTypeString[^1] == '&')
+            switch (value[^1])
             {
-                baseTypeString = baseTypeString[..^1];
-                IsRef = true;
-            }
-            if (baseTypeString[^1] == '*')
-            {
-                baseTypeString = baseTypeString[..^1];
-                IsRef = true;
-            }
+                case '&':
+                    _type = TypeType.Ref;
+                    BaseType = new CsType(value[..^1]);
+                    break;
+                case '*':
+                    _type = TypeType.Pointer;
+                    BaseType = new CsType(value[..^1]);
+                    break;
+                case ']' when value[^2] == ']':
+                    _type = TypeType.Generic;
+                    GenericTypes = ConvertToTypesForFullName(value.ToString());
+                    BaseType = new CsType(value[..value.IndexOf('[')]);
 
-            if (baseTypeString[^1] == '>')
-            {
-                int typesStartIndex = value.IndexOf('<');
-                GenericTypes = ConvertToTypes(baseTypeString);
-                IsGenericType = true;
-                baseTypeString = baseTypeString[..typesStartIndex];
-            }
-            else if (baseTypeString[^1] == ']')
-            {
-                int startIndex = value.IndexOf('[');
-                if (baseTypeString[^2] == ']')
-                {
-                    GenericTypes = ConvertToTypesForFullName(baseTypeString);
-                    IsGenericType = true;
-                    baseTypeString = baseTypeString[..startIndex];
-                }
-                else
-                {
-                    Rank = baseTypeString[startIndex..].Count(x => x == ',') + 1;
-                    baseTypeString = baseTypeString[..startIndex];
-                    IsArray = true;
-                }
-            }
-            if (baseTypeString.Contains('`'))
-            {
-                baseTypeString = baseTypeString[..value.IndexOf('`')];
-                IsGenericType = true;
-            }
+                    break;
+                case ']' when value[^2] != ']':
+                    _type = TypeType.Array;
+                    int lastIndex = value.LastIndexOf('[');
+                    Rank = value[lastIndex..^1].ToArray().Count(x => x == ',') + 1;
+                    BaseType = new CsType(value[..lastIndex]);
+                    break;
+                case '>':
+                    _type = TypeType.Generic;
+                    int startindex = value.IndexOf('<');
+                    GenericTypes = ConvertToTypes(value.ToString());
+                    BaseType = new CsType(value[..startindex]);
+                    break;
+                default:
+                    int last = value.LastIndexOf('+');
+                    if (last >= 0)
+                    {
+                        ParentType = new CsType(value[..last]);
+                        value = value[(last + 1)..];
+                    }
 
-            int parentTypeIndex = baseTypeString.LastIndexOf('+');
-            if (parentTypeIndex >= 0)
-            {
-                string source = baseTypeString;
-                baseTypeString = source[(parentTypeIndex + 1)..];
-                ParentType = source[..parentTypeIndex];
+                    last = value.LastIndexOf('`');
+                    if (last >= 0)
+                    {
+                        value = value[..last];
+                    }
+                    BaseName = value.ToString();
+                    break;
             }
-            _baseType = baseTypeString;
         }
 
         private static CsType[] ConvertToTypes(string typesString)
