@@ -76,6 +76,9 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual(expectedName, type.Value);
             Assert.AreEqual(typeof(Dictionary<string, List<string>>).Namespace + "." + expectedName, type.FullName);
             Assert.IsFalse(type.IsGeneric);
+
+            Assert.AreEqual(new CsType(typeof(Dictionary<List<int[]>[], Dictionary<int[], string>>[]))
+                , new CsType("System.Collections.Generic.Dictionary<System.Collections.Generic.List<System.Int32[]>[], System.Collections.Generic.Dictionary<System.Int32[], System.String>>[]"));
         }
 
         [TestMethod()]
@@ -135,6 +138,8 @@ namespace BuildSoft.Code.Content.CSharp.Test
             Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.Int32, System.String>>", new CsType(typeof(List<Dictionary<int, string>>)).ToString());
             Assert.AreEqual("System.Collections.Generic.Dictionary<System.Collections.Generic.List<System.Int32>, System.Collections.Generic.Dictionary<System.Int32, System.String>>"
                 , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)).ToString());
+            Assert.AreEqual(new CsType("System.Collections.Generic.Dictionary<System.Collections.Generic.List<System.Int32>, System.Collections.Generic.Dictionary<System.Int32, System.String>>")
+                , new CsType(typeof(Dictionary<List<int>, Dictionary<int, string>>)));
         }
 
         [WorkItem(3)]
