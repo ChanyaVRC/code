@@ -41,25 +41,13 @@ namespace BuildSoft.Code.Content.CSharp
                 }
                 return namespaceString + "." + Name.Base;
             }
-        }   
-        private string OptimizedBaseType
-        {
-            get
-            {
-                string? namespaceString = Namespace.Value;
-                if (namespaceString == null)
-                {
-                    return Name.OptimizedBase;
-                }
-                return namespaceString + "." + Name.OptimizedBase;
-            }
         }
 
         // TODO: Return the best name based on using directive.
         public string GetOptimizedName() => Name.Concat(GetOptimizedBaseTypeName());
         public string GetOptimizedBaseTypeName()
         {
-            string baseType = OptimizedBaseType;
+            string baseType = BaseType;
             if (baseType.IsFullNameOfKeywordType())
             {
                 return baseType.ToKeywordType();
