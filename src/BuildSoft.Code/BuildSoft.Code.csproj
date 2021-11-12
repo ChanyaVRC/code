@@ -5,9 +5,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\BuildSoft\code\src\BuildSoft.Code\Content\CSharp\.editorconfig" />
-  </ItemGroup>
 	
 </Project>
