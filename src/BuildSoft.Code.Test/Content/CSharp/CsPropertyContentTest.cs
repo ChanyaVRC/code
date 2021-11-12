@@ -6,39 +6,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp.Test
+namespace BuildSoft.Code.Content.CSharp.Test;
+
+[TestClass()]
+[TestOf(typeof(CsPropertyContent))]
+public class CsPropertyContentTest
 {
-    [TestClass()]
-    [TestOf(typeof(CsPropertyContent))]
-    public class CsPropertyContentTest
+    [TestMethod()]
+    public void ConstructorTest()
     {
-        [TestMethod()]
-        public void ConstructorTest()
-        {
-            CsPropertyContent content = new("Property", "Type");
-            Assert.IsNotNull(content);
-        }
+        CsPropertyContent content = new("Property", "Type");
+        Assert.IsNotNull(content);
+    }
 
-        [TestMethod()]
-        public void ToCodeTest()
-        {
-            CsPropertyContent content = new("Property", "Type");
+    [TestMethod()]
+    public void ToCodeTest()
+    {
+        CsPropertyContent content = new("Property", "Type");
 
-            string expectedBody =
+        string expectedBody =
 @"Type Property
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
 
-            expectedBody =
+        expectedBody =
 @" Type Property
  {
  }
 ";
-            expected = new(expectedBody, expectedBody.Length - " }\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(" "));
-        }
+        expected = new(expectedBody, expectedBody.Length - " }\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(" "));
     }
 }

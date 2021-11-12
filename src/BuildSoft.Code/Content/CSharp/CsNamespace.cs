@@ -5,95 +5,94 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp
+namespace BuildSoft.Code.Content.CSharp;
+
+public /*record*/ class CsNamespace : IEquatable<CsNamespace>
 {
-    public /*record*/ class CsNamespace : IEquatable<CsNamespace>
+    public static readonly CsNamespace Global = new(null);
+
+    public ImmutableArray<CsIdentifier> Domain { get; }
+    public string? Value { get; }
+
+    public CsNamespace(CsIdentifier identifier)
     {
-        public static readonly CsNamespace Global = new(null);
+        Domain = ImmutableArray.Create(identifier);
+        Value = identifier.Value;
+    }
 
-        public ImmutableArray<CsIdentifier> Domain { get; }
-        public string? Value { get; }
-
-        public CsNamespace(CsIdentifier identifier)
+    public CsNamespace(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
         {
-            Domain = ImmutableArray.Create(identifier);
-            Value = identifier.Value;
+            Domain = ImmutableArray<CsIdentifier>.Empty;
+            Value = null;
         }
-
-        public CsNamespace(string? value)
+        else
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                Domain = ImmutableArray<CsIdentifier>.Empty;
-                Value = null;
-            }
-            else
-            {
-                Domain = value.Split('.').Select(x => new CsIdentifier(x)).ToImmutableArray();
-                Value = value;
-            }
+            Domain = value.Split('.').Select(x => new CsIdentifier(x)).ToImmutableArray();
+            Value = value;
         }
+    }
 
-        public CsNamespace(CsNamespace parent, CsIdentifier identifier)
+    public CsNamespace(CsNamespace parent, CsIdentifier identifier)
+    {
+        Domain = parent.Domain.Add(identifier);
+
+        string? value = parent.Value;
+        Value = value == null ? identifier.Value : value + '.' + identifier.Value;
+    }
+
+    public CsNamespace(CsNamespace parent, string child)
+        : this(parent, new CsNamespace(child))
+    {
+
+    }
+
+    public CsNamespace(CsNamespace parent, CsNamespace child)
+    {
+        if (child.Value == null)
         {
-            Domain = parent.Domain.Add(identifier);
-
-            string? value = parent.Value;
-            Value = value == null ? identifier.Value : value + '.' + identifier.Value;
+            (Domain, Value) = (parent.Domain, parent.Value);
         }
-
-        public CsNamespace(CsNamespace parent, string child)
-            : this(parent, new CsNamespace(child))
+        else if (parent.Value == null)
         {
-
+            (Domain, Value) = (child.Domain, child.Value);
         }
-        
-        public CsNamespace(CsNamespace parent, CsNamespace child)
+        else
         {
-            if (child.Value == null)
-            {
-                (Domain, Value) = (parent.Domain, parent.Value);
-            }
-            else if (parent.Value == null)
-            {
-                (Domain, Value) = (child.Domain, child.Value);
-            }
-            else
-            {
-                Domain = parent.Domain.AddRange(child.Domain);
-                Value = parent.Value + '.' + child.Value;
-            }
+            Domain = parent.Domain.AddRange(child.Domain);
+            Value = parent.Value + '.' + child.Value;
         }
+    }
 
-        public override string? ToString() => Value;
+    public override string? ToString() => Value;
 
-        public override int GetHashCode()
+    public override int GetHashCode()
+    {
+        return Value == null ? 0 : Value.GetHashCode();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not null && obj is CsNamespace @namespace)
         {
-            return Value == null ? 0 : Value.GetHashCode();
+            return Equals(@namespace);
         }
-
-        public override bool Equals(object? obj)
+        return false;
+    }
+    public virtual bool Equals(CsNamespace? obj)
+    {
+        if (obj is null || GetType() != obj.GetType())
         {
-            if (obj is not null && obj is CsNamespace @namespace)
-            {
-                return Equals(@namespace);
-            }
             return false;
         }
-        public virtual bool Equals(CsNamespace? obj)
-        {
-            if (obj is null || GetType() != obj.GetType())
-            {
-                return false;
-            }
 
-            return Value == obj.Value;
-        }
-
-        public static implicit operator CsNamespace(string value) => new(value);
-
-        public static bool operator ==(CsNamespace? left, CsNamespace? right)
-            => left is null ? right is null : left.Equals(right);
-        public static bool operator !=(CsNamespace? left, CsNamespace? right) => !(left == right);
+        return Value == obj.Value;
     }
+
+    public static implicit operator CsNamespace(string value) => new(value);
+
+    public static bool operator ==(CsNamespace? left, CsNamespace? right)
+        => left is null ? right is null : left.Equals(right);
+    public static bool operator !=(CsNamespace? left, CsNamespace? right) => !(left == right);
 }

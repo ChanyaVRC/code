@@ -5,36 +5,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Internal
+namespace BuildSoft.Code.Internal;
+
+internal class OneElementEnumerator<T> : IEnumerator<T> where T : notnull
 {
-    internal class OneElementEnumerator<T> : IEnumerator<T> where T : notnull
+    private bool _hasElement = true;
+    private readonly T _value;
+
+    public T Current => _value;
+
+    object IEnumerator.Current => _value;
+
+    public OneElementEnumerator(T value)
     {
-        private bool _hasElement = true;
-        private readonly T _value;
+        _value = value;
+    }
 
-        public T Current => _value;
+    public void Dispose()
+    {
+    }
 
-        object IEnumerator.Current => _value;
+    public bool MoveNext()
+    {
+        bool canMoveNext = _hasElement;
+        _hasElement = false;
+        return canMoveNext;
+    }
 
-        public OneElementEnumerator(T value)
-        {
-            _value = value;
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public bool MoveNext()
-        {
-            bool canMoveNext = _hasElement;
-            _hasElement = false;
-            return canMoveNext;
-        }
-
-        public void Reset()
-        {
-            _hasElement = true;
-        }
+    public void Reset()
+    {
+        _hasElement = true;
     }
 }

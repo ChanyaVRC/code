@@ -4,41 +4,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp
+namespace BuildSoft.Code.Content.CSharp;
+
+public class CsUsingDirectiveContent : CsContent
 {
-    public class CsUsingDirectiveContent : CsContent
+    public CsNamespace Namespace { get; }
+    public bool IsGlobal { get; }
+    private string CodeBody
     {
-        public CsNamespace Namespace { get; }
-        public bool IsGlobal { get; }
-        private string CodeBody
+        get
         {
-            get
+            if (_codeBodyCache == null)
             {
-                if (_codeBodyCache == null)
+                if (IsGlobal)
                 {
-                    if (IsGlobal)
-                    {
-                        _codeBodyCache = $"global using {Namespace};\r\n";
-                    }
-                    else
-                    {
-                        _codeBodyCache = $"using {Namespace};\r\n";
-                    }
+                    _codeBodyCache = $"global using {Namespace};\r\n";
                 }
-
-                return _codeBodyCache;
+                else
+                {
+                    _codeBodyCache = $"using {Namespace};\r\n";
+                }
             }
-        }
-        private string? _codeBodyCache;
 
-        public CsUsingDirectiveContent(CsNamespace @namespace, bool isGlobal = false)
-        {
-            CanOperateContents = false;
-            Namespace = @namespace;
-            IsGlobal = isGlobal;
+            return _codeBodyCache;
         }
-
-        public override Code ToCode(string indent) 
-            => Code.CreateCodeWithNoContents(indent.Length == 0 ? CodeBody : indent + CodeBody);
     }
+    private string? _codeBodyCache;
+
+    public CsUsingDirectiveContent(CsNamespace @namespace, bool isGlobal = false)
+    {
+        CanOperateContents = false;
+        Namespace = @namespace;
+        IsGlobal = isGlobal;
+    }
+
+    public override Code ToCode(string indent)
+        => Code.CreateCodeWithNoContents(indent.Length == 0 ? CodeBody : indent + CodeBody);
 }

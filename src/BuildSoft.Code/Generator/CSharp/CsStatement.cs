@@ -6,148 +6,147 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Generator.CSharp
+namespace BuildSoft.Code.Generator.CSharp;
+
+public abstract class CsStatement : IDisposable, IAsyncDisposable, ICsStatement
 {
-    public abstract class CsStatement : IDisposable, IAsyncDisposable, ICsStatement
+    public CsFileWriter Writer { get; }
+    protected CsStatement? Parent { get; }
+    protected CsStatement? Child { get; set; }
+
+    public abstract string HeadKeyword { get; }
+    public string Head { get; private set; } = string.Empty;
+
+    public bool IsTopLevelStatement => Parent == null;
+
+    public string CurrentNamespace { get; protected init; }
+
+    protected internal CsStatement(CsFileWriter writer)
     {
-        public CsFileWriter Writer { get; }
-        protected CsStatement? Parent { get; }
-        protected CsStatement? Child { get; set; }
+        Debug.Assert(writer.CurrentIndent == 0);
+        CurrentNamespace = string.Empty;
+        Writer = writer;
+    }
+    protected CsStatement(string head, CsStatement parent)
+    {
+        CsFileWriter writer = parent.Writer;
+        Debug.Assert(writer.CurrentIndent > 0 || (parent.IsTopLevelStatement && writer.CurrentIndent == 0));
+        Debug.Assert(parent.Child == null);
+        Debug.Assert(parent != this);
 
-        public abstract string HeadKeyword { get; }
-        public string Head { get; private set; } = string.Empty;
+        CurrentNamespace = parent.CurrentNamespace;
 
-        public bool IsTopLevelStatement => Parent == null;
+        Writer = writer;
+        Head = head;
+        Parent = parent;
+        parent.Child = this;
 
-        public string CurrentNamespace { get; protected init; }
+        Writer.AppendLine(head);
+        Writer.AppendLine("{");
+        Writer.CurrentIndent++;
+    }
 
-        protected internal CsStatement(CsFileWriter writer)
+    public void WriteEmptyLine()
+    {
+        Writer.AppendLine(string.Empty, false);
+    }
+    public void WriteLineDynamic(string content, bool appendIndent = true)
+    {
+        Writer.AppendLine(content, appendIndent);
+    }
+    public void WriteAttributes(string[] contents, bool isLine = true)
+    {
+        StringBuilder builder = new(contents.Length * nameof(Attribute).Length);
+        builder.Append('[');
+        for (int i = 0; i < contents.Length; i++)
         {
-            Debug.Assert(writer.CurrentIndent == 0);
-            CurrentNamespace = string.Empty;
-            Writer = writer;
+            string content = MakeOptimizedAttributeString(contents[i]);
+
+            builder.Append(contents[i]);
+            builder.Append(',');
+            builder.Append(' ');
         }
-        protected CsStatement(string head, CsStatement parent)
+        builder.Append(']');
+
+        string attributeString = builder.ToString();
+        if (isLine)
         {
-            CsFileWriter writer = parent.Writer;
-            Debug.Assert(writer.CurrentIndent > 0 || (parent.IsTopLevelStatement && writer.CurrentIndent == 0));
-            Debug.Assert(parent.Child == null);
-            Debug.Assert(parent != this);
+            Writer.Append(attributeString);
+        }
+        else
+        {
+            Writer.AppendLine(attributeString);
+        }
+    }
 
-            CurrentNamespace = parent.CurrentNamespace;
-
-            Writer = writer;
-            Head = head;
-            Parent = parent;
-            parent.Child = this;
-
-            Writer.AppendLine(head);
-            Writer.AppendLine("{");
-            Writer.CurrentIndent++;
+    private static string MakeOptimizedAttributeString(string content)
+    {
+        if (content.Length > nameof(Attribute).Length && content.EndsWith(nameof(Attribute)))
+        {
+            // trim string, "Attribute"
+            content = content[..^nameof(Attribute).Length];
         }
 
-        public void WriteEmptyLine()
+        return content;
+    }
+
+    public void WriteAttribute(Type content, bool isLine = true)
+    {
+        WriteAttribute(content.Name, isLine);
+    }
+    public void WriteAttribute(string content, bool isLine = true)
+    {
+        string attributeString = $"[{MakeOptimizedAttributeString(content)}]";
+
+        if (isLine)
         {
-            Writer.AppendLine(string.Empty, false);
+            Writer.Append(attributeString);
         }
-        public void WriteLineDynamic(string content, bool appendIndent = true)
+        else
         {
-            Writer.AppendLine(content, appendIndent);
+            Writer.AppendLine(attributeString);
         }
-        public void WriteAttributes(string[] contents, bool isLine = true)
+    }
+
+    private bool _isDisposed = false;
+    public virtual void Dispose()
+    {
+        Debug.Assert(Child == null);
+
+        if (!_isDisposed)
         {
-            StringBuilder builder = new(contents.Length * nameof(Attribute).Length);
-            builder.Append('[');
-            for (int i = 0; i < contents.Length; i++)
+            _isDisposed = true;
+            if (!IsTopLevelStatement)
             {
-                string content = MakeOptimizedAttributeString(contents[i]);
+                Debug.Assert(Parent != null);
+                Debug.Assert(Parent.Child == this);
+                Parent.Child = null;
 
-                builder.Append(contents[i]);
-                builder.Append(',');
-                builder.Append(' ');
+                Writer.CurrentIndent--;
+                Writer.AppendLine("}");
             }
-            builder.Append(']');
-
-            string attributeString = builder.ToString();
-            if (isLine)
-            {
-                Writer.Append(attributeString);
-            }
-            else
-            {
-                Writer.AppendLine(attributeString);
-            }
+            GC.SuppressFinalize(this);
         }
+    }
 
-        private static string MakeOptimizedAttributeString(string content)
+    public virtual async ValueTask DisposeAsync()
+    {
+        Debug.Assert(Child == null);
+
+        if (!_isDisposed)
         {
-            if (content.Length > nameof(Attribute).Length && content.EndsWith(nameof(Attribute)))
+            _isDisposed = true;
+
+            if (!IsTopLevelStatement)
             {
-                // trim string, "Attribute"
-                content = content[..^nameof(Attribute).Length];
+                Debug.Assert(Parent != null);
+                Debug.Assert(Parent.Child == this);
+                Parent.Child = null;
+
+                Writer.CurrentIndent--;
+                await Writer.AppendLineAsync("}");
             }
-
-            return content;
-        }
-
-        public void WriteAttribute(Type content, bool isLine = true)
-        {
-            WriteAttribute(content.Name, isLine);
-        }
-        public void WriteAttribute(string content, bool isLine = true)
-        {
-            string attributeString = $"[{MakeOptimizedAttributeString(content)}]";
-
-            if (isLine)
-            {
-                Writer.Append(attributeString);
-            }
-            else
-            {
-                Writer.AppendLine(attributeString);
-            }
-        }
-
-        private bool _isDisposed = false;
-        public virtual void Dispose()
-        {
-            Debug.Assert(Child == null);
-            
-            if (!_isDisposed)
-            {
-                _isDisposed = true;
-                if (!IsTopLevelStatement)
-                {
-                    Debug.Assert(Parent != null);
-                    Debug.Assert(Parent.Child == this);
-                    Parent.Child = null;
-
-                    Writer.CurrentIndent--;
-                    Writer.AppendLine("}");
-                }
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        public virtual async ValueTask DisposeAsync()
-        {
-            Debug.Assert(Child == null);
-
-            if (!_isDisposed)
-            {
-                _isDisposed = true;
-
-                if (!IsTopLevelStatement)
-                {
-                    Debug.Assert(Parent != null);
-                    Debug.Assert(Parent.Child == this);
-                    Parent.Child = null;
-                    
-                    Writer.CurrentIndent--;
-                    await Writer.AppendLineAsync("}");
-                }
-                GC.SuppressFinalize(this);
-            }
+            GC.SuppressFinalize(this);
         }
     }
 }

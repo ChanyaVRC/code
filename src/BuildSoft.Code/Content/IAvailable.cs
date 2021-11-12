@@ -1,8 +1,7 @@
-﻿namespace BuildSoft.Code.Content
+﻿namespace BuildSoft.Code.Content;
+
+public interface IAvailable<T>
 {
-    public interface IAvailable<T>
-    {
-        void AddContent(T content);
-        bool RemoveContent(T content);
-    }
+    void AddContent(T content);
+    bool RemoveContent(T content);
 }

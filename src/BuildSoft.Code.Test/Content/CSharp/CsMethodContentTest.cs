@@ -6,50 +6,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp.Test
+namespace BuildSoft.Code.Content.CSharp.Test;
+
+[TestClass()]
+[TestOf(typeof(CsMethodContent))]
+public class CsMethodContentTest
 {
-    [TestClass()]
-    [TestOf(typeof(CsMethodContent))]
-    public class CsMethodContentTest
+    private static readonly CsArgumentDefinition[] _arguments =
+        new CsArgumentDefinition[] { new("int", "arg1"), new("string", "arg2", "in") };
+    private static readonly string[] _modifier =
+        new string[] { "public", "async" };
+
+    [TestMethod()]
+    public void ConstructorTest()
     {
-        private static readonly CsArgumentDefinition[] _arguments =
-            new CsArgumentDefinition[] { new("int", "arg1"), new("string", "arg2", "in") };
-        private static readonly string[] _modifier =
-            new string[] { "public", "async" };
-        
-        [TestMethod()]
-        public void ConstructorTest()
-        {
-            CsMethodContent content = new("Identifier", "ReturnType");
-            Assert.AreEqual(0, content.Arguments.Count);
-            Assert.AreEqual("", content.ArgumentList);
+        CsMethodContent content = new("Identifier", "ReturnType");
+        Assert.AreEqual(0, content.Arguments.Count);
+        Assert.AreEqual("", content.ArgumentList);
 
-            content = new("Identifier", "ReturnType", null, _arguments);
-            Assert.AreNotSame(_arguments, content.Arguments);
-            Assert.AreEqual(2, content.Arguments.Count);
-            Assert.AreEqual("int arg1, in string arg2", content.ArgumentList);
-        }
+        content = new("Identifier", "ReturnType", null, _arguments);
+        Assert.AreNotSame(_arguments, content.Arguments);
+        Assert.AreEqual(2, content.Arguments.Count);
+        Assert.AreEqual("int arg1, in string arg2", content.ArgumentList);
+    }
 
-        [TestMethod()]
-        public void ToCodeTest()
-        {
-            CsMethodContent content = new("Identifier", "ReturnType", _modifier, _arguments);
+    [TestMethod()]
+    public void ToCodeTest()
+    {
+        CsMethodContent content = new("Identifier", "ReturnType", _modifier, _arguments);
 
-            string expectedBody =
+        string expectedBody =
 @"public async ReturnType Identifier(int arg1, in string arg2)
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
 
-            expectedBody =
+        expectedBody =
 @"  public async ReturnType Identifier(int arg1, in string arg2)
   {
   }
 ";
-            expected = new(expectedBody, expectedBody.Length - "  }\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode("  "));
-        }
+        expected = new(expectedBody, expectedBody.Length - "  }\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode("  "));
     }
 }

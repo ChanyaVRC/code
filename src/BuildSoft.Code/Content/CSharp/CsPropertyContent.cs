@@ -4,33 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp
+namespace BuildSoft.Code.Content.CSharp;
+
+public class CsPropertyContent : CsMemberContent
 {
-    public class CsPropertyContent : CsMemberContent
+    public CsPropertyContent(CsIdentifier identifier, CsType type, IEnumerable<string>? modifiers = null)
+        : base(identifier, type, modifiers)
     {
-        public CsPropertyContent(CsIdentifier identifier, CsType type, IEnumerable<string>? modifiers = null) 
-            : base(identifier, type, modifiers)
-        {
 
+    }
+
+    public override Code ToCode(string indent)
+    {
+        string body;
+        if (indent.Length == 0)
+        {
+            body = $"{Header}\r\n{{\r\n}}\r\n";
         }
-
-        public override Code ToCode(string indent)
+        else
         {
-            string body;
-            if (indent.Length == 0)
-            {
-                body = $"{Header}\r\n{{\r\n}}\r\n";
-            }
-            else
-            {
-                body =
+            body =
 @$"{indent}{Header}
 {indent}{{
 {indent}}}
 ";
-            }
-            int contentsStartIndex = body.Length - (indent.Length + "}\r\n".Length);
-            return Code.CreateCodeWithContents(body, contentsStartIndex, true);
         }
+        int contentsStartIndex = body.Length - (indent.Length + "}\r\n".Length);
+        return Code.CreateCodeWithContents(body, contentsStartIndex, true);
     }
 }

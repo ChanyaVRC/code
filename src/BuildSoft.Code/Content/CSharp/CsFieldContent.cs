@@ -5,17 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp
-{
-    public class CsFieldContent : CsMemberContent
-    {
-        public CsFieldContent(CsIdentifier identifier, CsType type, IEnumerable<string>? modifiers = null)
-            : base(identifier, type, modifiers)
-        {
-            CanOperateContents = false;
-        }
+namespace BuildSoft.Code.Content.CSharp;
 
-        public override Code ToCode(string indent)
-            => Code.CreateCodeWithNoContents($"{indent}{Header};\r\n");
+public class CsFieldContent : CsMemberContent
+{
+    public CsFieldContent(CsIdentifier identifier, CsType type, IEnumerable<string>? modifiers = null)
+        : base(identifier, type, modifiers)
+    {
+        CanOperateContents = false;
     }
+
+    public override Code ToCode(string indent)
+        => Code.CreateCodeWithNoContents($"{indent}{Header};\r\n");
 }

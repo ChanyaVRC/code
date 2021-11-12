@@ -6,104 +6,103 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp.Test
+namespace BuildSoft.Code.Content.CSharp.Test;
+
+[TestClass()]
+[TestOf(typeof(CsUserDefinedTypeContent))]
+public class CsUserDefinedTypeContentTest : CsUserDefinedTypeContent
 {
-    [TestClass()]
-    [TestOf(typeof(CsUserDefinedTypeContent))]
-    public class CsUserDefinedTypeContentTest : CsUserDefinedTypeContent
+    #region members for CsUserDefinedTypeContent
+    public CsUserDefinedTypeContentTest() : base("identifier")
     {
-        #region members for CsUserDefinedTypeContent
-        public CsUserDefinedTypeContentTest() : base("identifier")
-        {
-        }
+    }
 
-        public CsUserDefinedTypeContentTest(string identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
-            : base(identifier, modifiers, subClass, baseInterfaces)
-        {
-        }
+    public CsUserDefinedTypeContentTest(string identifier, IReadOnlyCollection<string>? modifiers = null, CsType? subClass = null, IReadOnlyCollection<CsType>? baseInterfaces = null)
+        : base(identifier, modifiers, subClass, baseInterfaces)
+    {
+    }
 
-        public override string Keyword => "keyword";
-        #endregion
+    public override string Keyword => "keyword";
+    #endregion
 
-        private static readonly string[] _modifiers = new[] { "public", "partial" };
-        private static readonly CsType[] _interfaces = new CsType[] { "I1", "I2" };
+    private static readonly string[] _modifiers = new[] { "public", "partial" };
+    private static readonly CsType[] _interfaces = new CsType[] { "I1", "I2" };
 
-        [TestMethod()]
-        public void ToCodeIndentTest()
-        {
-            CsUserDefinedTypeContentTest content = new("Identifier");
-            string expectedBody =
+    [TestMethod()]
+    public void ToCodeIndentTest()
+    {
+        CsUserDefinedTypeContentTest content = new("Identifier");
+        string expectedBody =
 @"  keyword Identifier
   {
   }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "  }\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode("  "));
-        }
+        Code expected = new(expectedBody, expectedBody.Length - "  }\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode("  "));
+    }
 
-        [TestMethod()]
-        public void ToCodeTest1()
-        {
-            CsUserDefinedTypeContentTest content = new("Identifier");
-            string expectedBody =
+    [TestMethod()]
+    public void ToCodeTest1()
+    {
+        CsUserDefinedTypeContentTest content = new("Identifier");
+        string expectedBody =
 @"keyword Identifier
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
-        }
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
+    }
 
-        [TestMethod()]
-        public void ToCodeTest2()
-        {
-            CsUserDefinedTypeContentTest content = new("Identifier", _modifiers);
-            string expectedBody =
+    [TestMethod()]
+    public void ToCodeTest2()
+    {
+        CsUserDefinedTypeContentTest content = new("Identifier", _modifiers);
+        string expectedBody =
 @"public partial keyword Identifier
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
-        }
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
+    }
 
-        [TestMethod()]
-        public void ToCodeTest3()
-        {
-            CsUserDefinedTypeContentTest content = new("Identifier", null, "Base");
-            string expectedBody =
+    [TestMethod()]
+    public void ToCodeTest3()
+    {
+        CsUserDefinedTypeContentTest content = new("Identifier", null, "Base");
+        string expectedBody =
 @"keyword Identifier : Base
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
-        }
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
+    }
 
-        [TestMethod()]
-        public void ToCodeTest4()
-        {
-            CsUserDefinedTypeContentTest content = new("Identifier", null, null, _interfaces);
-            string expectedBody =
+    [TestMethod()]
+    public void ToCodeTest4()
+    {
+        CsUserDefinedTypeContentTest content = new("Identifier", null, null, _interfaces);
+        string expectedBody =
 @"keyword Identifier : I1, I2
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
-        }
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
+    }
 
-        [TestMethod()]
-        public void ToCodeAllTest()
-        {
-            CsUserDefinedTypeContentTest content = new("Identifier", _modifiers, "Base", _interfaces);
-            string expectedBody =
+    [TestMethod()]
+    public void ToCodeAllTest()
+    {
+        CsUserDefinedTypeContentTest content = new("Identifier", _modifiers, "Base", _interfaces);
+        string expectedBody =
 @"public partial keyword Identifier : Base, I1, I2
 {
 }
 ";
-            Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
-        }
+        Code expected = new(expectedBody, expectedBody.Length - "}\r\n".Length, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
     }
 }

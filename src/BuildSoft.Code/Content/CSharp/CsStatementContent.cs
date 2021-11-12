@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp
+namespace BuildSoft.Code.Content.CSharp;
+
+internal abstract class CsStatementContent : CsContent
 {
-    internal abstract class CsStatementContent : CsContent
+    public CsStatementContent()
     {
-        public CsStatementContent()
-        {
-        }
     }
 }

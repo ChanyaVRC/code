@@ -1,11 +1,10 @@
-﻿namespace BuildSoft.Code.Generator.CSharp
+﻿namespace BuildSoft.Code.Generator.CSharp;
+
+public interface INamespaceStatement : ICsStatement
 {
-    public interface INamespaceStatement : ICsStatement
+    public void WriteUsingDirective(string @namespace)
     {
-        public void WriteUsingDirective(string @namespace)
-        {
-            string content = $"using {@namespace};";
-            Writer.AppendLine(content);
-        }
+        string content = $"using {@namespace};";
+        Writer.AppendLine(content);
     }
 }

@@ -5,116 +5,115 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Generator.CSharp
+namespace BuildSoft.Code.Generator.CSharp;
+
+public class CsFileWriter : IDisposable, IAsyncDisposable
 {
-    public class CsFileWriter : IDisposable, IAsyncDisposable
+    private static readonly FileStreamOptions _options = new()
     {
-        private static readonly FileStreamOptions _options = new()
-        {
-            Access = FileAccess.Write,
-            BufferSize = 4096,
-            Share = FileShare.None,
-            Mode = FileMode.Create,
-            Options = FileOptions.None,
-            PreallocationSize = 1024,
-        };
-        public const int TabSize = 4;
+        Access = FileAccess.Write,
+        BufferSize = 4096,
+        Share = FileShare.None,
+        Mode = FileMode.Create,
+        Options = FileOptions.None,
+        PreallocationSize = 1024,
+    };
+    public const int TabSize = 4;
 
-        private readonly StreamWriter _writer;
-        private int _currentIndent = 0;
-        
-        public int CurrentIndent
-        {
-            get => _currentIndent;
-            set
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(value, ParamName.value);
-                _currentIndent = value;
-            }
-        }
+    private readonly StreamWriter _writer;
+    private int _currentIndent = 0;
 
-        private CsTopLevelStatement? _topLevelStatement;
+    public int CurrentIndent
+    {
+        get => _currentIndent;
+        set
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(value, ParamName.value);
+            _currentIndent = value;
+        }
+    }
 
-        public CsFileWriter(string filePath)
-        {
-            _writer = new StreamWriter(filePath, Encoding.UTF8, _options);
-        }
+    private CsTopLevelStatement? _topLevelStatement;
 
-        public CsTopLevelStatement CreateTopLevelStatement()
-        {
-            return _topLevelStatement ??= new CsTopLevelStatement(this);
-        }
+    public CsFileWriter(string filePath)
+    {
+        _writer = new StreamWriter(filePath, Encoding.UTF8, _options);
+    }
 
-        internal void Append(string content)
-        {
-            _writer.Write(content);
-        }
-        internal void AppendLine(bool useIndent = false)
-        {
-            if (useIndent)
-            {
-                AppendIndent();
-            }
-            _writer.WriteLine();
-        }
-        internal void AppendLine(string content, bool useIndent = true)
-        {
-            if (useIndent)
-            {
-                AppendIndent();
-            }
-            _writer.WriteLine(content);
-        }
-        internal void AppendIndent()
-        {
-            _writer.Write(CodeHelper.CreateOrGetIndent(_currentIndent));
-        }
+    public CsTopLevelStatement CreateTopLevelStatement()
+    {
+        return _topLevelStatement ??= new CsTopLevelStatement(this);
+    }
 
-        internal async Task AppendAsync(string content)
+    internal void Append(string content)
+    {
+        _writer.Write(content);
+    }
+    internal void AppendLine(bool useIndent = false)
+    {
+        if (useIndent)
         {
-            await _writer.WriteAsync(content);
+            AppendIndent();
         }
-        internal async Task AppendLineAsync(bool useIndent = false)
+        _writer.WriteLine();
+    }
+    internal void AppendLine(string content, bool useIndent = true)
+    {
+        if (useIndent)
         {
-            if (useIndent)
-            {
-                await AppendIndentAsync();
-            }
-            await _writer.WriteLineAsync();
+            AppendIndent();
         }
-        internal async Task AppendLineAsync(string content, bool useIndent = true)
-        {
-            if (useIndent)
-            {
-                await AppendIndentAsync();
-            }
-            await _writer.WriteLineAsync(content);
-        }
-        internal async Task AppendIndentAsync()
-        {
-            await _writer.WriteAsync(CodeHelper.CreateOrGetIndent(_currentIndent));
-        }
+        _writer.WriteLine(content);
+    }
+    internal void AppendIndent()
+    {
+        _writer.Write(CodeHelper.CreateOrGetIndent(_currentIndent));
+    }
 
-        private bool _isDisposed = false;
-        public void Dispose()
+    internal async Task AppendAsync(string content)
+    {
+        await _writer.WriteAsync(content);
+    }
+    internal async Task AppendLineAsync(bool useIndent = false)
+    {
+        if (useIndent)
         {
-            if (_isDisposed)
-            {
-                _isDisposed = true;
-
-                _writer.Dispose();
-                GC.SuppressFinalize(this);
-            }
+            await AppendIndentAsync();
         }
-        public async ValueTask DisposeAsync()
+        await _writer.WriteLineAsync();
+    }
+    internal async Task AppendLineAsync(string content, bool useIndent = true)
+    {
+        if (useIndent)
         {
-            if (_isDisposed)
-            {
-                _isDisposed = true;
+            await AppendIndentAsync();
+        }
+        await _writer.WriteLineAsync(content);
+    }
+    internal async Task AppendIndentAsync()
+    {
+        await _writer.WriteAsync(CodeHelper.CreateOrGetIndent(_currentIndent));
+    }
 
-                await _writer.DisposeAsync();
-                GC.SuppressFinalize(this);
-            }
+    private bool _isDisposed = false;
+    public void Dispose()
+    {
+        if (_isDisposed)
+        {
+            _isDisposed = true;
+
+            _writer.Dispose();
+            GC.SuppressFinalize(this);
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (_isDisposed)
+        {
+            _isDisposed = true;
+
+            await _writer.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

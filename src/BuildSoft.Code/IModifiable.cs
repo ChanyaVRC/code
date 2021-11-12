@@ -1,8 +1,7 @@
 ﻿
-namespace BuildSoft.Code
+namespace BuildSoft.Code;
+
+internal interface IModifiable
 {
-    internal interface IModifiable
-    {
-        IReadOnlyCollection<string> Modifiers { get; }
-    }
+    IReadOnlyCollection<string> Modifiers { get; }
 }

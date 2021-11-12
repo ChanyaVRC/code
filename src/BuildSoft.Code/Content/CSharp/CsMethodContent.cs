@@ -4,56 +4,55 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp
+namespace BuildSoft.Code.Content.CSharp;
+
+public class CsMethodContent : CsMemberContent
 {
-    public class CsMethodContent : CsMemberContent
+    private List<CsArgumentDefinition>? _arguments;
+    public IReadOnlyCollection<CsArgumentDefinition> Arguments
+        => _arguments ??= new List<CsArgumentDefinition>();
+
+    public string ArgumentList => CreateArgumentList();
+    protected virtual string CreateArgumentList()
     {
-        private List<CsArgumentDefinition>? _arguments;
-        public IReadOnlyCollection<CsArgumentDefinition> Arguments
-            => _arguments ??= new List<CsArgumentDefinition>();
-
-        public string ArgumentList => CreateArgumentList();
-        protected virtual string CreateArgumentList()
+        if (_arguments == null || _arguments.Count <= 0)
         {
-            if (_arguments == null || _arguments.Count <= 0)
-            {
-                return string.Empty;
-            }
-
-            return string.Join(", ", _arguments);
+            return string.Empty;
         }
 
-        public CsMethodContent(
-            CsIdentifier identifier,
-            CsType returnType,
-            IEnumerable<string>? modifiers = null,
-            IEnumerable<CsArgumentDefinition>? arguments = null)
-            : base(identifier, returnType, modifiers)
+        return string.Join(", ", _arguments);
+    }
+
+    public CsMethodContent(
+        CsIdentifier identifier,
+        CsType returnType,
+        IEnumerable<string>? modifiers = null,
+        IEnumerable<CsArgumentDefinition>? arguments = null)
+        : base(identifier, returnType, modifiers)
+    {
+        if (arguments != null)
         {
-            if (arguments != null)
-            {
-                _arguments = new List<CsArgumentDefinition>(arguments);
-            }
+            _arguments = new List<CsArgumentDefinition>(arguments);
         }
+    }
 
 
-        public override Code ToCode(string indent)
+    public override Code ToCode(string indent)
+    {
+        string body;
+        if (indent.Length == 0)
         {
-            string body;
-            if (indent.Length == 0)
-            {
-                body = $"{Header}({ArgumentList})\r\n{{\r\n}}\r\n";
-            }
-            else
-            {
-                body =
+            body = $"{Header}({ArgumentList})\r\n{{\r\n}}\r\n";
+        }
+        else
+        {
+            body =
 $@"{indent}{Header}({ArgumentList})
 {indent}{{
 {indent}}}
 ";
-            }
-            int position = body.Length - "}\r\n".Length - indent.Length;
-            return Code.CreateCodeWithContents(body, position, true);
         }
+        int position = body.Length - "}\r\n".Length - indent.Length;
+        return Code.CreateCodeWithContents(body, position, true);
     }
 }

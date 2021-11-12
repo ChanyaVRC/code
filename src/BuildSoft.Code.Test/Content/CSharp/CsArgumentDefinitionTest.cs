@@ -6,36 +6,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp.Test
+namespace BuildSoft.Code.Content.CSharp.Test;
+
+[TestClass()]
+[TestOf(typeof(CsArgumentDefinition))]
+public class CsArgumentDefinitionTest
 {
-    [TestClass()]
-    [TestOf(typeof(CsArgumentDefinition))]
-    public class CsArgumentDefinitionTest
+    [TestMethod()]
+    public void ToOptimizedStringTest()
     {
-        [TestMethod()]
-        public void ToOptimizedStringTest()
-        {
-            CsArgumentDefinition argument = new(new(typeof(int)), new("value"));
-            Assert.AreEqual("int value", argument.ToOptimizedString());
+        CsArgumentDefinition argument = new(new(typeof(int)), new("value"));
+        Assert.AreEqual("int value", argument.ToOptimizedString());
 
-            argument = new(new(typeof(int)), new("value"), "in");
-            Assert.AreEqual("in int value", argument.ToOptimizedString());
-        
-            argument = new(new(typeof(Uri)), new("value"), "in");
-            Assert.AreEqual("in System.Uri value", argument.ToOptimizedString());
-        }
+        argument = new(new(typeof(int)), new("value"), "in");
+        Assert.AreEqual("in int value", argument.ToOptimizedString());
 
-        [TestMethod()]
-        public void ToStringTest()
-        {
-            CsArgumentDefinition argument = new(new(typeof(int)), new("value"));
-            Assert.AreEqual("int value", argument.ToString());
-            
-            argument = new(new(typeof(int)), new("value"), "in");
-            Assert.AreEqual("in int value", argument.ToString());
+        argument = new(new(typeof(Uri)), new("value"), "in");
+        Assert.AreEqual("in System.Uri value", argument.ToOptimizedString());
+    }
 
-            argument = new(new(typeof(Uri)), new("value"), "in");
-            Assert.AreEqual("in System.Uri value", argument.ToString());
-        }
+    [TestMethod()]
+    public void ToStringTest()
+    {
+        CsArgumentDefinition argument = new(new(typeof(int)), new("value"));
+        Assert.AreEqual("int value", argument.ToString());
+
+        argument = new(new(typeof(int)), new("value"), "in");
+        Assert.AreEqual("in int value", argument.ToString());
+
+        argument = new(new(typeof(Uri)), new("value"), "in");
+        Assert.AreEqual("in System.Uri value", argument.ToString());
     }
 }

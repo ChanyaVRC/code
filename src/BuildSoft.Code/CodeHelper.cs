@@ -6,75 +6,74 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code
+namespace BuildSoft.Code;
+
+internal static class CodeHelper
 {
-    internal static class CodeHelper
+    private const int DefaultTabSize = 4;
+    private const int DefaultCapacity = DefaultTabSize * 10 + 1;
+
+    internal static int TabSize { get; set; } = DefaultTabSize;
+
+    private static string?[] _spaceCacheArray = Array.Empty<string?>();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string CreateOrGetIndent(int indent)
     {
-        private const int DefaultTabSize = 4;
-        private const int DefaultCapacity = DefaultTabSize * 10 + 1;
+        return CreateOrGetIndentBySpaceCount(checked(indent * TabSize));
+    }
 
-        internal static int TabSize { get; set; } = DefaultTabSize;
-
-        private static string?[] _spaceCacheArray = Array.Empty<string?>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CreateOrGetIndent(int indent)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string CreateOrGetIndentBySpaceCount(int count)
+    {
+        ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(count, ParamName.count);
+        if (count == 0)
         {
-            return CreateOrGetIndentBySpaceCount(checked(indent * TabSize));
+            return string.Empty;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CreateOrGetIndentBySpaceCount(int count)
+        var cache = _spaceCacheArray;
+        if (cache.Length >= count)
         {
-            ThrowHelper.ThrowArgumentOutOfRangeExceptionIfNegative(count, ParamName.count);
-            if (count == 0)
+            string? value = cache[count - 1];
+            if (value != null)
             {
-                return string.Empty;
+                return value;
             }
-
-            var cache = _spaceCacheArray;
-            if (cache.Length >= count)
-            {
-                string? value = cache[count - 1];
-                if (value != null)
-                {
-                    return value;
-                }
-            }
-            else
-            {
-                cache = Grow(cache, count);
-            }
-
-            string indentContent = new(' ', count);
-            cache[count - 1] = indentContent;
-            _spaceCacheArray = cache;
-
-            return indentContent;
+        }
+        else
+        {
+            cache = Grow(cache, count);
         }
 
-        private static string?[] Grow(string?[] cache, int min)
+        string indentContent = new(' ', count);
+        cache[count - 1] = indentContent;
+        _spaceCacheArray = cache;
+
+        return indentContent;
+    }
+
+    private static string?[] Grow(string?[] cache, int min)
+    {
+        Debug.Assert(cache.Length < min);
+
+        int newSize = cache.Length == 0 ? DefaultCapacity : 2 * cache.Length;
+
+        if ((uint)newSize > Array.MaxLength)
         {
-            Debug.Assert(cache.Length < min);
-
-            int newSize = cache.Length == 0 ? DefaultCapacity : 2 * cache.Length;
-
-            if ((uint)newSize > Array.MaxLength)
-            {
-                newSize = Array.MaxLength;
-            }
-
-            if (newSize < min)
-            {
-                newSize = min;
-            }
-
-            string?[] newCache = new string?[newSize];
-            if (cache.Length > 0)
-            {
-                Array.Copy(cache, newCache, cache.Length);
-            }
-            return newCache;
+            newSize = Array.MaxLength;
         }
+
+        if (newSize < min)
+        {
+            newSize = min;
+        }
+
+        string?[] newCache = new string?[newSize];
+        if (cache.Length > 0)
+        {
+            Array.Copy(cache, newCache, cache.Length);
+        }
+        return newCache;
     }
 }

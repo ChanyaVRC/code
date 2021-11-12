@@ -5,82 +5,81 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code.Content.CSharp.Test
+namespace BuildSoft.Code.Content.CSharp.Test;
+
+[TestClass]
+[TestOf(typeof(CsNamespaceContent))]
+public class CsNamespaceContentTest
 {
-    [TestClass]
-    [TestOf(typeof(CsNamespaceContent))]
-    public class CsNamespaceContentTest
+    [TestMethod]
+    public void ConstructorTest()
     {
-        [TestMethod]
-        public void ConstructorTest()
-        {
-            CsNamespaceContent content = new("Test");
-            Assert.AreEqual("Test", content.Namespace.Value);
-        }
+        CsNamespaceContent content = new("Test");
+        Assert.AreEqual("Test", content.Namespace.Value);
+    }
 
-        [TestMethod]
-        public void AddNamespaceContentTest()
-        {
-            CsNamespaceContent content = new("Parent");
-            CsNamespaceContent clildContent = new("Clild");
+    [TestMethod]
+    public void AddNamespaceContentTest()
+    {
+        CsNamespaceContent content = new("Parent");
+        CsNamespaceContent clildContent = new("Clild");
 
-            Assert.AreEqual(0, content.Contents.Count);
+        Assert.AreEqual(0, content.Contents.Count);
 
-            content.AddContent(clildContent);
+        content.AddContent(clildContent);
 
-            Assert.AreEqual(1, content.Contents.Count);
-            Assert.AreSame(clildContent, content.Contents[0]);
-        }
+        Assert.AreEqual(1, content.Contents.Count);
+        Assert.AreSame(clildContent, content.Contents[0]);
+    }
 
-        [TestMethod]
-        public void RemoveNamespaceContentTest()
-        {
-            CsNamespaceContent content = new("Parent");
-            CsNamespaceContent clildContent1 = new("Child1");
-            CsNamespaceContent clildContent2 = new("Child2");
+    [TestMethod]
+    public void RemoveNamespaceContentTest()
+    {
+        CsNamespaceContent content = new("Parent");
+        CsNamespaceContent clildContent1 = new("Child1");
+        CsNamespaceContent clildContent2 = new("Child2");
 
-            content.AddContent(clildContent1);
-            content.AddContent(clildContent2);
+        content.AddContent(clildContent1);
+        content.AddContent(clildContent2);
 
-            Assert.AreEqual(2, content.Contents.Count);
+        Assert.AreEqual(2, content.Contents.Count);
 
-            Assert.IsTrue(content.RemoveContent(clildContent2));
-            Assert.AreEqual(1, content.Contents.Count);
-            Assert.AreSame(clildContent1, content.Contents[0]);
+        Assert.IsTrue(content.RemoveContent(clildContent2));
+        Assert.AreEqual(1, content.Contents.Count);
+        Assert.AreSame(clildContent1, content.Contents[0]);
 
-            Assert.IsFalse(content.RemoveContent(clildContent2));
-            Assert.AreEqual(1, content.Contents.Count);
-            Assert.AreSame(clildContent1, content.Contents[0]);
-        }
+        Assert.IsFalse(content.RemoveContent(clildContent2));
+        Assert.AreEqual(1, content.Contents.Count);
+        Assert.AreSame(clildContent1, content.Contents[0]);
+    }
 
-        [TestMethod]
-        public void ToCodeTest()
-        {
-            CsNamespaceContent content = new("Test");
+    [TestMethod]
+    public void ToCodeTest()
+    {
+        CsNamespaceContent content = new("Test");
 
-            string expectedBody = 
+        string expectedBody =
 @"namespace Test
 {
 }
 ";
-            int expectedPosition =
+        int expectedPosition =
 @"namespace Test
 {
 ".Length;
-            Code expected = new(expectedBody, expectedPosition, true, true);
-            Assert.AreEqual(expected, content.ToCode(""));
+        Code expected = new(expectedBody, expectedPosition, true, true);
+        Assert.AreEqual(expected, content.ToCode(""));
 
-            expectedBody = 
+        expectedBody =
 @" namespace Test
  {
  }
 ";
-            expectedPosition = 
+        expectedPosition =
 @" namespace Test
  {
 ".Length;
-            expected = new(expectedBody, expectedPosition, true, true);
-            Assert.AreEqual(expected, content.ToCode(" "));
-        }
+        expected = new(expectedBody, expectedPosition, true, true);
+        Assert.AreEqual(expected, content.ToCode(" "));
     }
 }

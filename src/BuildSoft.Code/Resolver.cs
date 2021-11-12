@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildSoft.Code
-{
-    internal static class Resolver
-    {
+namespace BuildSoft.Code;
 
-    }
+internal static class Resolver
+{
+
 }
