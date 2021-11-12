@@ -120,10 +120,11 @@ namespace BuildSoft.Code.Content.CSharp.Test
         public void GetOptimizedNameArrayTest()
         {
             Assert.AreEqual("int[]", new CsType(typeof(int[])).GetOptimizedName());
+            Assert.AreEqual("int[][]", new CsType(typeof(int[][])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int>[]", new CsType(typeof(List<int>[])).GetOptimizedName());
-            Assert.AreEqual("System.Collections.Generic.List<int[][,,]>[,]", new CsType(typeof(List<int[][,,]>[,])).GetOptimizedName());
             Assert.AreEqual("System.Collections.Generic.List<int[][]>[]", new CsType(typeof(List<int[][]>[])).GetOptimizedName());
+            Assert.AreEqual("System.Collections.Generic.List<int[][,,]>[,]", new CsType(typeof(List<int[][,,]>[,])).GetOptimizedName());
         }
 
         [TestMethod()]

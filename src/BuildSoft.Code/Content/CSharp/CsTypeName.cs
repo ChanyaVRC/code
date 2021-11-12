@@ -1,13 +1,10 @@
 ﻿namespace BuildSoft.Code.Content.CSharp
 {
-
     public /*record*/ class CsTypeName
     {
-        public CsType? BaseType { get; }
-        public CsIdentifier? BaseName { get; }
+        public CsIdentifier BaseName { get; }
 
-        public string Base => BaseType?.Value ?? BaseName!.Value;
-        public string OptimizedBase => BaseType?.GetOptimizedName() ?? BaseName!.Value;
+        public string Base => BaseName.Value;
 
         public string Value
         {
@@ -25,28 +22,34 @@
             }
         }
 
-        internal string Concat(string value, bool isOptimized = true) => _type switch
+        internal string Concat(string value, bool isOptimized = true)
         {
-            TypeType.Pointer => value + '*',
-            TypeType.Ref => "ref " + value,
-            TypeType.Array => $"{value}[{new string(',', Rank - 1)}]",
-            TypeType.Generic => $"{value}<{string.Join(", ", GenericTypes!.Select(x => isOptimized ? x.GetOptimizedName() : x.FullName))}>",
-            _ => value,
-        };
-        public int Rank { get; }
+            if (IsRef)
+            {
+                value = "ref " + value;
+            }
+            if (IsGenericType)
+            {
+                value += $"<{string.Join(", ", GenericTypes!.Select(x => isOptimized ? x.GetOptimizedName() : x.FullName))}>";
+            }
+            if (IsPointer)
+            {
+                value += '*';
+            }
+            if (IsArray)
+            {
+                value += string.Join(null, Ranks.Select(x => $"[{new string(',', x - 1)}]"));
+            }
+            return value;
+        }
+        public int[] Ranks { get; }
         public CsType[]? GenericTypes { get; }
         public CsType? ParentType { get; }
 
-        public bool IsArray => _type == TypeType.Array;
-        public bool IsGenericType => _type == TypeType.Generic;
-        public bool IsRef => _type == TypeType.Ref;
-        public bool IsPointer => _type == TypeType.Pointer;
-
-        private readonly TypeType _type;
-        enum TypeType
-        {
-            Nomal, Ref, Pointer, Array, Generic,
-        }
+        public bool IsArray { get; }
+        public bool IsGenericType { get; }
+        public bool IsRef { get; }
+        public bool IsPointer { get; }
 
         public CsTypeName(string value) : this(value.AsSpan())
         {
@@ -60,50 +63,56 @@
                 throw new ArgumentException("Identifier must be at least one character.", nameof(value));
             }
 
-            switch (value[^1])
+            List<int> ranks = new();
+            while (true)
             {
-                case '&':
-                    _type = TypeType.Ref;
-                    BaseType = new CsType(value[..^1]);
-                    break;
-                case '*':
-                    _type = TypeType.Pointer;
-                    BaseType = new CsType(value[..^1]);
-                    break;
-                case ']' when value[^2] == ']':
-                    _type = TypeType.Generic;
-                    GenericTypes = ConvertToTypesForFullName(value.ToString());
-                    BaseType = new CsType(value[..value.IndexOf('[')]);
+                switch (value[^1])
+                {
+                    case '&':
+                        IsRef = true;
+                        value = value[..^1];
+                        break;
+                    case '*':
+                        IsPointer = true;
+                        value = value[..^1];
+                        break;
+                    case ']' when value[^2] == ']':
+                        IsGenericType = true;
+                        GenericTypes = ConvertToTypesForFullName(value.ToString());
+                        value = value[..value.IndexOf('[')];
 
-                    break;
-                case ']' when value[^2] != ']':
-                    _type = TypeType.Array;
-                    int lastIndex = value.LastIndexOf('[');
-                    Rank = value[lastIndex..^1].ToArray().Count(x => x == ',') + 1;
-                    BaseType = new CsType(value[..lastIndex]);
-                    break;
-                case '>':
-                    _type = TypeType.Generic;
-                    int startindex = value.IndexOf('<');
-                    GenericTypes = ConvertToTypes(value.ToString());
-                    BaseType = new CsType(value[..startindex]);
-                    break;
-                default:
-                    int last = value.LastIndexOf('+');
-                    if (last >= 0)
-                    {
-                        ParentType = new CsType(value[..last]);
-                        value = value[(last + 1)..];
-                    }
+                        break;
+                    case ']' when value[^2] != ']':
+                        IsArray = true;
+                        int lastIndex = value.LastIndexOf('[');
+                        ranks.Add(value[lastIndex..^1].ToArray().Count(x => x == ',') + 1);
+                        value = value[..lastIndex];
+                        break;
+                    case '>':
+                        IsGenericType = true;
+                        int startindex = value.IndexOf('<');
+                        GenericTypes = ConvertToTypes(value.ToString());
+                        value = value[..startindex];
+                        break;
+                    default:
+                        int last = value.LastIndexOf('+');
+                        if (last >= 0)
+                        {
+                            ParentType = new CsType(value[..last]);
+                            value = value[(last + 1)..];
+                        }
 
-                    last = value.LastIndexOf('`');
-                    if (last >= 0)
-                    {
-                        value = value[..last];
-                    }
-                    BaseName = value.ToString();
-                    break;
+                        last = value.LastIndexOf('`');
+                        if (last >= 0)
+                        {
+                            value = value[..last];
+                        }
+                        BaseName = value.ToString();
+                        goto Exit;
+                }
             }
+        Exit:
+            Ranks = ranks.ToArray();
         }
 
         private static CsType[] ConvertToTypes(string typesString)
