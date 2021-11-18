@@ -45,6 +45,6 @@ public class CsNamespaceContent : CsContent, IAvailable<CsNamespaceContent>, IAv
         }
         contentPosition = body.Length - (indent.Length + "}\r\n".Length);
 
-        return Code.CreateCodeWithContents(body, contentPosition, true);
+        return Code.CreateWithContents(body, contentPosition, true);
     }
 }

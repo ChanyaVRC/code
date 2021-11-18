@@ -53,6 +53,6 @@ $@"{indent}{Header}({ArgumentList})
 ";
         }
         int position = body.Length - "}\r\n".Length - indent.Length;
-        return Code.CreateCodeWithContents(body, position, true);
+        return Code.CreateWithContents(body, position, true);
     }
 }

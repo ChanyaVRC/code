@@ -30,6 +30,6 @@ public class CsPropertyContent : CsMemberContent
 ";
         }
         int contentsStartIndex = body.Length - (indent.Length + "}\r\n".Length);
-        return Code.CreateCodeWithContents(body, contentsStartIndex, true);
+        return Code.CreateWithContents(body, contentsStartIndex, true);
     }
 }

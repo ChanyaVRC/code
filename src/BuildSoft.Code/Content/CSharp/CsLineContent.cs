@@ -8,7 +8,7 @@ namespace BuildSoft.Code.Content.CSharp;
 
 public class CsLineContent : CsContent
 {
-    private static readonly Code _code = Code.CreateCodeWithNoContents("\r\n");
+    private static readonly Code _code = Code.CreateWithNoContents("\r\n");
     public CsLineContent()
     {
         CanOperateContents = false;

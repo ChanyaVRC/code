@@ -23,9 +23,9 @@ public record class Code
         HasContents = hasContent;
     }
 
-    public static Code CreateCodeWithContents(string body, int contentsStartIndex, bool needsIndent)
+    public static Code CreateWithContents(string body, int contentsStartIndex, bool needsIndent)
         => new(body, contentsStartIndex, needsIndent, true);
-    public static Code CreateCodeWithNoContents(string body)
+    public static Code CreateWithNoContents(string body)
         => new(body, body.Length, false, false);
 
     public void Deconstruct(out string body, out int contentsStartIndex, out bool needsIndent, out bool hasContent)

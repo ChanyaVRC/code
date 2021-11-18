@@ -39,5 +39,5 @@ public class CsUsingDirectiveContent : CsContent
     }
 
     public override Code ToCode(string indent)
-        => Code.CreateCodeWithNoContents(indent.Length == 0 ? CodeBody : indent + CodeBody);
+        => Code.CreateWithNoContents(indent.Length == 0 ? CodeBody : indent + CodeBody);
 }

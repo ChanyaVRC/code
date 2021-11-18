@@ -7,7 +7,7 @@ namespace BuildSoft.Code.Content.CSharp.Test;
 [TestOf(typeof(CsContent))]
 public class CsContentTest : CsContent
 {
-    public override Code ToCode(string indent) => Code.CreateCodeWithNoContents(indent);
+    public override Code ToCode(string indent) => Code.CreateWithNoContents(indent);
 
     [TestMethod]
     public void AddableContentsTest()

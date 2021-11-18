@@ -16,5 +16,5 @@ public class CsFieldContent : CsMemberContent
     }
 
     public override Code ToCode(string indent)
-        => Code.CreateCodeWithNoContents($"{indent}{Header};\r\n");
+        => Code.CreateWithNoContents($"{indent}{Header};\r\n");
 }
