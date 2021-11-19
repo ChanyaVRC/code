@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildSoft.Code.Content.CSharp;
 
-internal abstract class CsStatementContent : CsContent
+public abstract class CsStatementContent : CsContent
 {
     public CsStatementContent()
     {
