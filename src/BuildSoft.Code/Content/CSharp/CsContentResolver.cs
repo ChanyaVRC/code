@@ -13,27 +13,7 @@ internal static class CsContentResolver
     public static string ToKeywordType(this string fullName) => FullNameToKeyword[fullName];
     public static string ToFullname(this string value) => KeywordToFullName[value];
 
-    internal static Dictionary<string, string> FullNameToKeyword = new()
-    {
-        { "System.SByte", "sbyte" },
-        { "System.Byte", "byte" },
-        { "System.Int16", "short" },
-        { "System.UInt16", "ushort" },
-        { "System.Int32", "int" },
-        { "System.UInt32", "uint" },
-        { "System.Int64", "long" },
-        { "System.UInt64", "ulong" },
-        { "System.Decimal", "decimal" },
-        { "System.Single", "float" },
-        { "System.Double", "double" },
-        { "System.Char", "char" },
-        { "System.Boolean", "bool" },
-        { "System.IntPtr", "nint" },
-        { "System.UIntPtr", "nuint" },
-        { "System.String", "string" },
-        { "System.Object", "object" },
-        { "System.Void", "void" },
-    };
+    internal static Dictionary<string, string> FullNameToKeyword = new();
     internal static Dictionary<string, string> KeywordToFullName = new()
     {
         { "sbyte", "System.SByte" },
@@ -55,4 +35,12 @@ internal static class CsContentResolver
         { "object", "System.Object" },
         { "void", "System.Void" },
     };
+
+    static CsContentResolver()
+    {
+        foreach (var (k, v) in KeywordToFullName)
+        {
+            FullNameToKeyword.Add(v, k);
+        }
+    }
 }
