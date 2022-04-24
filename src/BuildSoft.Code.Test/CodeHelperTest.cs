@@ -10,14 +10,14 @@ namespace BuildSoft.Code.Test;
 
 public class CodeHelperTest : IDisposable
 {
-    private int _oldTabSize;
+    private readonly int _oldTabSize;
 
     public CodeHelperTest()
     {
         _oldTabSize = CodeHelper.TabSize;
         ThreadPool.SetMinThreads(1000000, 1000000);
     }
-    
+
     public void Dispose()
     {
         CodeHelper.TabSize = _oldTabSize;
