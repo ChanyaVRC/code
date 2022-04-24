@@ -1,40 +1,33 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BuildSoft.Code.Content.CSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Xunit;
 
 namespace BuildSoft.Code.Content.CSharp.Test;
 
-[TestClass()]
-[TestOf(typeof(CsArgumentDefinition))]
 public class CsArgumentDefinitionTest
 {
-    [TestMethod()]
+    [Fact]
     public void ToOptimizedStringTest()
     {
         CsArgumentDefinition argument = new(new(typeof(int)), new("value"));
-        Assert.AreEqual("int value", argument.ToOptimizedString());
+        Assert.Equal("int value", argument.ToOptimizedString());
 
         argument = new(new(typeof(int)), new("value"), "in");
-        Assert.AreEqual("in int value", argument.ToOptimizedString());
+        Assert.Equal("in int value", argument.ToOptimizedString());
 
         argument = new(new(typeof(Uri)), new("value"), "in");
-        Assert.AreEqual("in System.Uri value", argument.ToOptimizedString());
+        Assert.Equal("in System.Uri value", argument.ToOptimizedString());
     }
 
-    [TestMethod()]
+    [Fact()]
     public void ToStringTest()
     {
         CsArgumentDefinition argument = new(new(typeof(int)), new("value"));
-        Assert.AreEqual("int value", argument.ToString());
+        Assert.Equal("int value", argument.ToString());
 
         argument = new(new(typeof(int)), new("value"), "in");
-        Assert.AreEqual("in int value", argument.ToString());
+        Assert.Equal("in int value", argument.ToString());
 
         argument = new(new(typeof(Uri)), new("value"), "in");
-        Assert.AreEqual("in System.Uri value", argument.ToString());
+        Assert.Equal("in System.Uri value", argument.ToString());
     }
 }

@@ -1,19 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BuildSoft.Code.Content;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Collections;
+using System.Text;
+using Xunit;
 
 namespace BuildSoft.Code.Content.Test;
 
-[TestClass]
 public class ContentContainerTest
 {
-    class CodeContent : ICodeContent<CodeContent>
+    private class CodeContent : ICodeContent<CodeContent>
     {
         public IReadOnlyList<CodeContent> Contents => throw new NotImplementedException();
         public string Export() => throw new NotImplementedException();
@@ -23,49 +18,48 @@ public class ContentContainerTest
         public Code ToCode(string indent) => throw new NotImplementedException();
     }
 
-    [TestMethod]
+    [Fact]
     public void ConstructorTest()
     {
         ContentContainer<CodeContent> container = new();
 
-        Assert.IsTrue(container.CanOperate);
-        Assert.IsFalse(container.IsReadOnly);
-        Assert.AreEqual(0, container.Count);
+        Assert.True(container.CanOperate);
+        Assert.False(container.IsReadOnly);
+        Assert.Empty(container);
     }
 
-    [TestMethod]
+    [Fact]
     public void AddTest()
     {
         ContentContainer<CodeContent> container = new();
         CodeContent item = new();
 
         container.Add(item);
-        Assert.AreEqual(1, container.Count);
-        Assert.AreSame(item, container[0]);
+        Assert.Single(container, item);
 
         container.CanOperate = false;
-        Assert.ThrowsException<InvalidOperationException>(() => container.Add(new CodeContent()));
-        Assert.AreEqual(1, container.Count);
+        Assert.Throws<InvalidOperationException>(() => container.Add(new CodeContent()));
+        Assert.Single(container, item);
     }
 
-    [TestMethod]
+    [Fact]
     public void RemoveTest()
     {
         ContentContainer<CodeContent> container = new();
         CodeContent item = new();
 
         container.Add(item);
-        Assert.IsFalse(container.Remove(new CodeContent()));
-        Assert.AreEqual(1, container.Count);
+        Assert.False(container.Remove(new CodeContent()));
+        Assert.Single(container);
 
-        Assert.IsTrue(container.Remove(item));
-        Assert.AreEqual(0, container.Count);
+        Assert.True(container.Remove(item));
+        Assert.Empty(container);
 
-        Assert.IsFalse(container.Remove(item));
-        Assert.AreEqual(0, container.Count);
+        Assert.False(container.Remove(item));
+        Assert.Empty(container);
     }
 
-    [TestMethod]
+    [Fact]
     public void ClearTest()
     {
         ContentContainer<CodeContent> container = new();
@@ -74,28 +68,28 @@ public class ContentContainerTest
         container.Add(new CodeContent());
 
         container.Clear();
-        Assert.AreEqual(0, container.Count);
+        Assert.Empty(container);
 
         container.Clear();
-        Assert.AreEqual(0, container.Count);
+        Assert.Empty(container);
     }
 
-    [TestMethod]
+    [Fact]
     public void ContainsTest()
     {
         ContentContainer<CodeContent> container = new();
         CodeContent item = new();
 
-        Assert.IsFalse(container.Contains(item));
+        Assert.DoesNotContain(item, container);
 
         container.Add(item);
-        Assert.IsTrue(container.Contains(item));
+        Assert.Contains(item, container);
 
         container.Remove(item);
-        Assert.IsFalse(container.Contains(item));
+        Assert.DoesNotContain(item, container);
     }
 
-    [TestMethod]
+    [Fact]
     public void CopyToTest()
     {
         ContentContainer<CodeContent> container = new();
@@ -108,10 +102,10 @@ public class ContentContainerTest
         CodeContent[] codeContents = new CodeContent[2];
         container.CopyTo(codeContents, 0);
 
-        CollectionAssert.AreEqual(new[] { item1, item2 }, codeContents);
+        Assert.Equal(new[] { item1, item2 }, codeContents);
     }
 
-    [TestMethod]
+    [Fact]
     public void GetEnumeratorTest()
     {
         ContentContainer<CodeContent> container = new();
@@ -123,19 +117,19 @@ public class ContentContainerTest
 
         using var enumerator = container.GetEnumerator();
 
-        Assert.IsTrue(enumerator.MoveNext());
-        Assert.AreSame(item1, enumerator.Current);
+        Assert.True(enumerator.MoveNext());
+        Assert.Same(item1, enumerator.Current);
 
-        Assert.IsTrue(enumerator.MoveNext());
-        Assert.AreSame(item2, enumerator.Current);
+        Assert.True(enumerator.MoveNext());
+        Assert.Same(item2, enumerator.Current);
 
-        Assert.IsFalse(enumerator.MoveNext());
+        Assert.False(enumerator.MoveNext());
 
         enumerator.Reset();
-        Assert.IsTrue(enumerator.MoveNext());
+        Assert.True(enumerator.MoveNext());
     }
 
-    [TestMethod]
+    [Fact]
     public void IndexOfTest()
     {
         ContentContainer<CodeContent> container = new();
@@ -143,14 +137,14 @@ public class ContentContainerTest
         CodeContent item2 = new();
 
         container.Add(item1);
-        Assert.AreEqual(0, container.IndexOf(item1));
-        Assert.AreEqual(-1, container.IndexOf(item2));
+        Assert.Equal(0, container.IndexOf(item1));
+        Assert.Equal(-1, container.IndexOf(item2));
 
         container.Add(item2);
-        Assert.AreEqual(1, container.IndexOf(item2));
+        Assert.Equal(1, container.IndexOf(item2));
     }
 
-    [TestMethod]
+    [Fact]
     public void InsertTest()
     {
         ContentContainer<CodeContent> container = new();
@@ -158,19 +152,16 @@ public class ContentContainerTest
         CodeContent item2 = new();
 
         container.Insert(0, item1);
-        Assert.AreEqual(1, container.Count);
-        Assert.AreSame(item1, container[0]);
+        Assert.Single(container, item1);
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => container.Insert(2, item2));
-        CollectionAssert.DoesNotContain(container, item2);
+        Assert.Throws<ArgumentOutOfRangeException>(() => container.Insert(2, item2));
+        Assert.DoesNotContain(item2, container);
 
         container.Insert(0, item2);
-        Assert.AreSame(item2, container[0]);
-        Assert.AreSame(item1, container[1]);
-        Assert.AreEqual(2, container.Count);
+        Assert.Equal(new[] { item2, item1 }, container);
     }
 
-    [TestMethod]
+    [Fact]
     public void RemoveAtTest()
     {
         ContentContainer<CodeContent> container = new();
@@ -181,10 +172,9 @@ public class ContentContainerTest
         container.Add(item2);
 
         container.RemoveAt(0);
-        CollectionAssert.DoesNotContain(container, item1);
-        Assert.AreSame(item2, container[0]);
-        Assert.AreEqual(1, container.Count);
+        Assert.DoesNotContain(item1, container);
+        Assert.Single(container, item2);
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => container.RemoveAt(1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => container.RemoveAt(1));
     }
 }

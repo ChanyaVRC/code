@@ -1,10 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace BuildSoft.Code.Content.CSharp.Test;
 
-[TestClass]
 public class ContentProperty
 {
     public static List<CsContent> Contents => new()
@@ -13,28 +12,28 @@ public class ContentProperty
         new CsNamespaceContent("Test"),
         new CsUsingDirectiveContent("System"),
         new CsLineContent(),
+        new CsClassContent("TypeName"),
+        new CsFieldContent("id", "TypeName"),
+        new CsGetAccessor(),
+        new CsSetAccessor(),
+        new CsInitAccessor(),
+        new CsMethodContent("id", "Type"),
+        new CsPropertyContent("id", "Type"),
+        new CsStructureContent("Type"),
     };
 
-    //public static IEnumerable<CsContent> ContentsIsAbleToHaveContents
-    //    => Contents.Where(v => !v.GetType().IsSubclassOf(typeof(CsNoContentsContent)));
-    //public static IEnumerable<CsContent> ContentsIsNotAbleToHaveContents
-    //    => Contents.Where(v => v.GetType().IsSubclassOf(typeof(CsNoContentsContent)));
-
-    [TestMethod]
-    [TestCategory("CheckTarget")]
-    [Priority(10)]
-    [Ignore]
+    [Fact]
     public void TestTargetCheck()
     {
         var targets = Contents;
         var targetTypes = typeof(CsContent).Assembly.GetTypes()
             .Where(x => x.IsSubclassOf(typeof(CsContent)) && !x.IsAbstract);
 
-        Assert.AreNotSame(targets, Contents);
+        Assert.NotSame(targets, Contents);
 
         foreach (var type in targetTypes)
         {
-            Assert.IsTrue(
+            Assert.True(
                 targets.Any(v => v.GetType() == type),
                 $"{nameof(Contents)} have no {type.Name} instances.");
         }

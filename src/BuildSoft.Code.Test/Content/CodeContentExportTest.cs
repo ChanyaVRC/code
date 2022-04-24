@@ -1,21 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.IO;
 using System.Text;
-using System.IO;
 using BuildSoft.Code.Content.CSharp;
+using Xunit;
 
 namespace BuildSoft.Code.Content.Test;
 
-[TestClass]
-[TestOf(typeof(CodeContent<>))]
 public class CodeContentExportTest
 {
     private readonly CsTopLevelContent _exportToTestTarget = new();
-    private string _exportedCode = null!;
-    private byte[] _expectedDefaultEncordingCode = null!;
-    private byte[] _expectedUtf32EncordingCode = null!;
+    private readonly string _exportedCode;
+    private readonly byte[] _expectedDefaultEncordingCode;
+    private readonly byte[] _expectedUtf32EncordingCode;
 
-    [TestInitialize]
-    public void InitializeForExportToTest()
+    public CodeContentExportTest()
     {
         _exportToTestTarget.AddContent(new CsUsingDirectiveContent("System"));
         _exportToTestTarget.AddContent(new CsUsingDirectiveContent("Microsoft.VisualStudio.TestTools.UnitTesting.Logging"));
@@ -32,7 +29,7 @@ public class CodeContentExportTest
         _expectedUtf32EncordingCode = Encoding.UTF32.GetBytes(_exportedCode);
     }
 
-    [TestMethod]
+    [Fact]
     public void ClearContentsTest()
     {
         CsTopLevelContent content = new();
@@ -41,14 +38,15 @@ public class CodeContentExportTest
         content.AddContent(line1);
         content.AddContent(line2);
 
-        Assert.AreEqual(2, content.Contents.Count);
+        Assert.Equal(new[] { line1, line2 }, content.Contents);
         content.ClearContents();
-        Assert.AreEqual(0, content.Contents.Count);
+        Assert.Empty(content.Contents);
     }
 
-    [TestMethod]
+    [Fact]
     public void ExportAsStringTest()
     {
+        int oldTabSize = CodeHelper.TabSize;
         CodeHelper.TabSize = 1;
         string expectedCode =
 @"using System;
@@ -68,26 +66,29 @@ namespace Test2
 }
 ";
 
-        Assert.AreEqual(expectedCode, _exportToTestTarget.Export());
+        Assert.Equal(expectedCode, _exportToTestTarget.Export());
+
+        CodeHelper.TabSize = oldTabSize;
     }
 
-    [TestMethod]
+    [Fact]
     public void ExportToStreamTest()
     {
         using var ms = new MemoryStream();
         _exportToTestTarget.ExportTo(ms);
-        CollectionAssert.AreEqual(_expectedDefaultEncordingCode, ms.ToArray());
+        Assert.Equal(_expectedDefaultEncordingCode, ms.ToArray());
     }
 
-    [TestMethod]
+    [Fact]
     public void ExportToStreamEncordingTest()
     {
         using var ms = new MemoryStream();
         _exportToTestTarget.ExportTo(ms, Encoding.UTF32);
-        CollectionAssert.AreEqual(_expectedUtf32EncordingCode, ms.ToArray());
+        Assert.Equal(_exportedCode, Encoding.UTF32.GetString(ms.ToArray()));
+        Assert.Equal(_expectedUtf32EncordingCode, ms.ToArray());
     }
 
-    [TestMethod]
+    [Fact]
     public void ExportToStreamWriterTest()
     {
         using var ms = new MemoryStream();
@@ -96,12 +97,10 @@ namespace Test2
         _exportToTestTarget.ExportTo(writer);
         writer.Flush();
 
-        CollectionAssert.AreEqual(_expectedDefaultEncordingCode, ms.ToArray());
+        Assert.Equal(_expectedDefaultEncordingCode, ms.ToArray());
     }
 
-    [TestMethod]
-    [Timeout(100)]
-    [ExecutionTimeTest]
+    [Fact(Timeout = 100)]
     public void ExportExecutionTimeTest()
     {
         for (int i = 0; i < 30000; i++)
@@ -110,10 +109,7 @@ namespace Test2
         }
     }
 
-    [TestMethod]
-    [Timeout(100)]
-    [Priority(10)]
-    [ExecutionTimeTest]
+    [Fact(Timeout = 100)]
     public void ExportToStreamExecutionTimeTest()
     {
         using var ms = new MemoryStream();
@@ -123,9 +119,7 @@ namespace Test2
         }
     }
 
-    [TestMethod]
-    [Timeout(100)]
-    [ExecutionTimeTest]
+    [Fact(Timeout = 100)]
     public void ExportToStreamWriterExecutionTimeTest()
     {
         using var ms = new MemoryStream();

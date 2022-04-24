@@ -1,59 +1,52 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace BuildSoft.Code.Content.CSharp.Test;
 
-[TestClass]
-[TestOf(typeof(CsNamespaceContent))]
 public class CsNamespaceContentTest
 {
-    [TestMethod]
+    [Fact]
     public void ConstructorTest()
     {
         CsNamespaceContent content = new("Test");
-        Assert.AreEqual("Test", content.Namespace.Value);
+        Assert.Equal("Test", content.Namespace.Value);
+        Assert.Empty(content.Contents);
     }
 
-    [TestMethod]
+    [Fact]
     public void AddNamespaceContentTest()
     {
         CsNamespaceContent content = new("Parent");
-        CsNamespaceContent clildContent = new("Clild");
+        CsNamespaceContent childContent = new("Child");
 
-        Assert.AreEqual(0, content.Contents.Count);
-
-        content.AddContent(clildContent);
-
-        Assert.AreEqual(1, content.Contents.Count);
-        Assert.AreSame(clildContent, content.Contents[0]);
+        content.AddContent(childContent);
+        Assert.Single(content.Contents, childContent);
     }
 
-    [TestMethod]
+    [Fact]
     public void RemoveNamespaceContentTest()
     {
         CsNamespaceContent content = new("Parent");
-        CsNamespaceContent clildContent1 = new("Child1");
-        CsNamespaceContent clildContent2 = new("Child2");
+        CsNamespaceContent childContent1 = new("Child1");
+        CsNamespaceContent childContent2 = new("Child2");
 
-        content.AddContent(clildContent1);
-        content.AddContent(clildContent2);
+        content.AddContent(childContent1);
+        content.AddContent(childContent2);
 
-        Assert.AreEqual(2, content.Contents.Count);
+        Assert.Equal(new[] { childContent1, childContent2 }, content.Contents);
 
-        Assert.IsTrue(content.RemoveContent(clildContent2));
-        Assert.AreEqual(1, content.Contents.Count);
-        Assert.AreSame(clildContent1, content.Contents[0]);
+        Assert.True(content.RemoveContent(childContent2));
+        Assert.Single(content.Contents, childContent1);
 
-        Assert.IsFalse(content.RemoveContent(clildContent2));
-        Assert.AreEqual(1, content.Contents.Count);
-        Assert.AreSame(clildContent1, content.Contents[0]);
+        Assert.False(content.RemoveContent(childContent2));
+        Assert.Single(content.Contents, childContent1);
     }
 
-    [TestMethod]
+    [Fact]
     public void ToCodeTest()
     {
         CsNamespaceContent content = new("Test");
@@ -68,7 +61,7 @@ public class CsNamespaceContentTest
 {
 ".Length;
         Code expected = new(expectedBody, expectedPosition, true, true);
-        Assert.AreEqual(expected, content.ToCode(""));
+        Assert.Equal(expected, content.ToCode(""));
 
         expectedBody =
 @" namespace Test
@@ -80,6 +73,6 @@ public class CsNamespaceContentTest
  {
 ".Length;
         expected = new(expectedBody, expectedPosition, true, true);
-        Assert.AreEqual(expected, content.ToCode(" "));
+        Assert.Equal(expected, content.ToCode(" "));
     }
 }

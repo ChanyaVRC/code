@@ -1,59 +1,51 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Xunit;
 
 namespace BuildSoft.Code.Content.CSharp.Test;
 
-[TestClass]
-[TestOf(typeof(CsTopLevelContent))]
 public class CsTopLevelContentTest
 {
-    [TestMethod]
+    [Fact]
     public void ConstructorTest()
     {
         _ = new CsTopLevelContent();
     }
 
-    [TestMethod]
+    [Fact]
     public void ToCodeTest()
     {
         CsTopLevelContent content = new();
 
-        Assert.AreEqual(new Code("", 0, false, true), content.ToCode(""));
-        Assert.AreEqual(new Code("", 0, false, true), content.ToCode(" "));
+        Assert.Equal(new Code("", 0, false, true), content.ToCode(""));
+        Assert.Equal(new Code("", 0, false, true), content.ToCode(" "));
     }
 
-    [TestMethod]
+    [Fact]
     public void AddNamespaceContentTest()
     {
         CsTopLevelContent content = new();
         CsNamespaceContent namespaceContent = new("Test");
 
-        Assert.AreEqual(0, content.Contents.Count);
+        Assert.Empty(content.Contents);
 
         content.AddContent(namespaceContent);
 
-        Assert.AreEqual(1, content.Contents.Count);
-        Assert.AreSame(namespaceContent, content.Contents[0]);
+        Assert.Single(content.Contents, namespaceContent);
     }
 
-    [TestMethod]
+    [Fact]
     public void AddUsingContentTest()
     {
         CsTopLevelContent content = new();
         CsUsingDirectiveContent usingContent = new("System");
 
-        Assert.AreEqual(0, content.Contents.Count);
+        Assert.Empty(content.Contents);
 
         content.AddContent(usingContent);
 
-        Assert.AreEqual(1, content.Contents.Count);
-        Assert.AreSame(usingContent, content.Contents[0]);
+        Assert.Single(content.Contents, usingContent);
     }
 
-    [TestMethod]
+    [Fact]
     public void RemoveNamespaceContentTest()
     {
         CsTopLevelContent testTarget = new();
@@ -63,36 +55,32 @@ public class CsTopLevelContentTest
         testTarget.AddContent(namespaceContent1);
         testTarget.AddContent(namespaceContent2);
 
-        Assert.AreEqual(2, testTarget.Contents.Count);
+        Assert.Equal(new[] { namespaceContent1, namespaceContent2 }, testTarget.Contents);
 
-        Assert.IsTrue(testTarget.RemoveContent(namespaceContent2));
-        Assert.AreEqual(1, testTarget.Contents.Count);
-        Assert.AreSame(namespaceContent1, testTarget.Contents[0]);
+        Assert.True(testTarget.RemoveContent(namespaceContent2));
+        Assert.Single(testTarget.Contents, namespaceContent1);
 
-        Assert.IsFalse(testTarget.RemoveContent(namespaceContent2));
-        Assert.AreEqual(1, testTarget.Contents.Count);
-        Assert.AreSame(namespaceContent1, testTarget.Contents[0]);
+        Assert.False(testTarget.RemoveContent(namespaceContent2));
+        Assert.Single(testTarget.Contents, namespaceContent1);
     }
 
-    [TestMethod]
+    [Fact]
     public void RemoveUsingContentTest()
     {
         CsTopLevelContent testTarget = new();
-        CsUsingDirectiveContent namespaceContent1 = new("System");
-        CsUsingDirectiveContent namespaceContent2 = new("System.Collections.Generic");
+        CsUsingDirectiveContent usingDirectiveContent1 = new("System");
+        CsUsingDirectiveContent usingDirectiveContent2 = new("System.Collections.Generic");
 
-        testTarget.AddContent(namespaceContent1);
-        testTarget.AddContent(namespaceContent2);
+        testTarget.AddContent(usingDirectiveContent1);
+        testTarget.AddContent(usingDirectiveContent2);
 
-        Assert.AreEqual(2, testTarget.Contents.Count);
+        Assert.Equal(new[] { usingDirectiveContent1, usingDirectiveContent2 }, testTarget.Contents);
 
-        Assert.IsTrue(testTarget.RemoveContent(namespaceContent2));
-        Assert.AreEqual(1, testTarget.Contents.Count);
-        Assert.AreSame(namespaceContent1, testTarget.Contents[0]);
+        Assert.True(testTarget.RemoveContent(usingDirectiveContent2));
+        Assert.Single(testTarget.Contents, usingDirectiveContent1);
 
-        Assert.IsFalse(testTarget.RemoveContent(namespaceContent2));
-        Assert.AreEqual(1, testTarget.Contents.Count);
-        Assert.AreSame(namespaceContent1, testTarget.Contents[0]);
+        Assert.False(testTarget.RemoveContent(usingDirectiveContent2));
+        Assert.Single(testTarget.Contents, usingDirectiveContent1);
     }
 }
 

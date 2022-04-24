@@ -1,46 +1,44 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace BuildSoft.Code.Content.CSharp.Test;
 
-[TestClass]
-[TestOf(typeof(CsUsingDirectiveContent))]
 public class CsUsingDirectiveContentTest
 {
-    [TestMethod]
+    [Fact]
     public void ConstructorTest()
     {
         CsUsingDirectiveContent content = new("System");
-        Assert.AreEqual("System", content.Namespace.Value);
-        Assert.IsFalse(content.IsGlobal);
+        Assert.Equal("System", content.Namespace.Value);
+        Assert.False(content.IsGlobal);
 
         content = new("System", true);
-        Assert.AreEqual("System", content.Namespace.Value, true);
-        Assert.IsTrue(content.IsGlobal);
+        Assert.Equal("System", content.Namespace.Value, true);
+        Assert.True(content.IsGlobal);
     }
 
-    [TestMethod]
+    [Fact]
     public void ToCodeNotGlobalTest()
     {
         CsUsingDirectiveContent content = new("System");
 
         string body = "using System;\r\n";
-        Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(""));
+        Assert.Equal(new Code(body, body.Length, false, false), content.ToCode(""));
 
         body = " " + body;
-        Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(" "));
+        Assert.Equal(new Code(body, body.Length, false, false), content.ToCode(" "));
     }
 
-    [TestMethod]
+    [Fact]
     public void ToCodeGlobalTest()
     {
         CsUsingDirectiveContent content = new("System", true);
 
         string body = "global using System;\r\n";
-        Assert.AreEqual(new Code(body, body.Length, false, false), content.ToCode(""));
+        Assert.Equal(new Code(body, body.Length, false, false), content.ToCode(""));
     }
 }

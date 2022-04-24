@@ -1,54 +1,50 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
+using Xunit;
 
 namespace BuildSoft.Code.Content.CSharp.Test;
 
-[TestClass]
-[TestOf(typeof(CsContent))]
 public class CsContentTest : CsContent
 {
     public override Code ToCode(string indent) => Code.CreateWithNoContents(indent);
 
-    [TestMethod]
+    [Fact]
     public void AddableContentsTest()
     {
         CsLineContent line = new();
 
-        Assert.AreEqual(0, Contents.Count);
+        Assert.Empty(Contents);
 
         AddableContents.Add(line);
 
-        Assert.AreEqual(1, Contents.Count);
-        Assert.AreSame(line, Contents[0]);
+        Assert.Single(Contents, line);
     }
 
-    [TestMethod]
+    [Fact]
     public void CanOperateContentsTest()
     {
-        Assert.IsTrue(CanOperateContents);
+        Assert.True(CanOperateContents);
 
         AddContent(new CsLineContent());
 
         CanOperateContents = false;
-        Assert.IsFalse(CanOperateContents);
+        Assert.False(CanOperateContents);
 
-        Assert.ThrowsException<InvalidOperationException>(() => AddContent(new CsLineContent()));
+        Assert.Throws<InvalidOperationException>(() => AddContent(new CsLineContent()));
     }
 
-    [TestMethod]
+    [Fact]
     public void AddContentTest()
     {
         CsLineContent line = new();
 
-        Assert.AreEqual(0, Contents.Count);
+        Assert.Empty(Contents);
 
         AddContent(line);
 
-        Assert.AreEqual(1, Contents.Count);
-        Assert.AreSame(line, Contents[0]);
+        Assert.Single(Contents, line);
     }
 
-    [TestMethod]
+    [Fact]
     public void RemoveContentTest()
     {
         CsLineContent line1 = new();
@@ -57,26 +53,28 @@ public class CsContentTest : CsContent
         AddContent(line1);
         AddContent(line2);
 
-        Assert.AreEqual(2, Contents.Count);
+        Assert.Equal(new[] { line1, line2 }, Contents);
 
-        Assert.IsTrue(RemoveContent(line2));
-        Assert.AreEqual(1, Contents.Count);
-        Assert.AreSame(line1, Contents[0]);
+        Assert.True(RemoveContent(line2));
+        Assert.Single(Contents, line1);
 
-        Assert.IsFalse(RemoveContent(line2));
-        Assert.AreEqual(1, Contents.Count);
-        Assert.AreSame(line1, Contents[0]);
+        Assert.False(RemoveContent(line2));
+        Assert.Single(Contents, line1);
     }
 
-    [TestMethod]
+    [Fact]
     public void ToCodeTest()
     {
+        int oldTabSize = CodeHelper.TabSize;
+
         CodeHelper.TabSize = 0;
-        Assert.AreEqual("", ToCode(0).Body);
-        Assert.AreEqual("", ToCode(1).Body);
+        Assert.Equal("", ToCode(0).Body);
+        Assert.Equal("", ToCode(1).Body);
 
         CodeHelper.TabSize = 2;
-        Assert.AreEqual("", ToCode(0).Body);
-        Assert.AreEqual("  ", ToCode(1).Body);
+        Assert.Equal("", ToCode(0).Body);
+        Assert.Equal("  ", ToCode(1).Body);
+
+        CodeHelper.TabSize = oldTabSize;
     }
 }
